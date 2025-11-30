@@ -1,0 +1,89 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --color-deep-anthracite: #09090B;
+  --color-carbon-grey: #121214;
+  --color-hazard-amber: #FFB000;
+  --color-terminal-green: #00E090;
+  --color-tungsten-grey: #27272A;
+
+  --font-mono: var(--font-mono);
+
+  --animate-spotlight: spotlight 2s ease .75s 1 forwards;
+  --animate-pulse-slow: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+
+  @keyframes spotlight {
+    0% {
+      opacity: 0;
+      transform: translate(-72%, -62%) scale(0.5);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translate(-50%, -40%) scale(1);
+    }
+  }
+}
+
+:root {
+  --background: #09090B;
+  --foreground: #EDEDED;
+  --primary: #FFB000;
+  --secondary: #00E090;
+  --border: #27272A;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-mono);
+  /* Default to mono for this aesthetic */
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #121214;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #27272A;
+  border: 1px solid #09090B;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #FFB000;
+}
+
+/* Utilities for the aesthetic */
+.scanline {
+  background: linear-gradient(to bottom,
+      rgba(255, 255, 255, 0),
+      rgba(255, 255, 255, 0) 50%,
+      rgba(0, 0, 0, 0.2) 50%,
+      rgba(0, 0, 0, 0.2));
+  background-size: 100% 4px;
+  pointer-events: none;
+}
+
+.grid-bg {
+  background-image:
+    linear-gradient(to right, #27272A 1px, transparent 1px),
+    linear-gradient(to bottom, #27272A 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+}
+
+.text-glow {
+  text-shadow: 0 0 10px rgba(255, 176, 0, 0.5);
+}
+
+.border-glow {
+  box-shadow: 0 0 10px rgba(255, 176, 0, 0.2);
+}
