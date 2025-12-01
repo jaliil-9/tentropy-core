@@ -1,6 +1,6 @@
 # TENTROPY | AI System Design (Open Core)
 
-This is the open-source core of [Tentropy](https://tentropy.co), a platform for mastering AI system design through realistic coding challenges.
+This is the open-source core of [TENTROPY](https://tentropy.co), a platform for improving AI system design through realistic system architecture challenges.
 
 ## 🚀 Features
 
