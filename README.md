@@ -2,13 +2,13 @@
 
 This is the open-source core of [TENTROPY](https://tentropy.co), a platform for improving AI system design through realistic system architecture challenges.
 
-## 🚀 Features
+## Features
 
 - **Real Simulation**: Challenges run in isolated Firecracker micro-VMs (via E2B).
 - **System Design Focus**: Tests latency, memory usage, and race conditions, not just algorithms.
 - **Modern Stack**: Next.js 15, Supabase, TailwindCSS.
 
-## 🛠️ Getting Started
+## Getting Started
 
 1. **Clone the repo**
    ```bash
@@ -29,10 +29,10 @@ This is the open-source core of [TENTROPY](https://tentropy.co), a platform for 
    npm run dev
    ```
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
 
-## 📄 License
+## License
 
 This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
