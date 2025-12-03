@@ -2,17 +2,13 @@
 
 **Engineering Platform for AI Systems.**
 
-TENTROPY is a reliability and evaluation platform designed to stress-test LLM workflows, agents, and RAG pipelines. It provides isolated, micro-VM environments to simulate real-world failures, ensuring your AI systems are robust, predictable, and production-ready.
+TENTROPY is a reliability and evaluation platform designed to stress-test LLM workflows, agents, and RAG pipelines logics. It provides isolated, micro-VM environments to simulate real-world failures, ensuring deep understanding of designing AI systems that are robust, predictable, and production-ready.
 
 ---
 
-## Mission & Vision
+## Mission
 
-### Current Stage: Academic
-We are currently in the **Foundation Phase**, offering a curated suite of engineering challenges ("Missions") designed to train AI Architects in the fundamental patterns of reliable LLM system design. From context window management to hallucination guardrails required for the next generation of AI engineering.
-
-### Future Vision: The Chaos Monkey for LLMs
-As we evolve, TENTROPY will become the standard for **AI System Simulation**. We are building the infrastructure to inject latency, network failures, and adversarial prompts into running agentic workflows, allowing certifying the resilience of AI stacks before deployment.
+We offer a curated suite of engineering challenges ("Missions") designed to train AI Architects in the fundamental patterns of reliable LLM system design. From context window management to hallucination guardrails required for the next generation of AI engineering.
 
 ---
 
@@ -66,13 +62,8 @@ As we evolve, TENTROPY will become the standard for **AI System Simulation**. We
     npm run dev
     ```
 
-5.  **Open the app:**
-    Visit [http://localhost:3000](http://localhost:3000) to start solving missions.
 
----
-
-
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions from the community! Whether it's adding a new challenge, fixing a bug, or improving documentation, your help is appreciated.
 
