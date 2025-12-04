@@ -25,10 +25,11 @@ export function useChallengeRunner(challenge: Challenge, user: any) {
     const [output, setOutput] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [sandboxID, setSandboxID] = useState<string | undefined>(undefined);
-    const [status, setStatus] = useState<'idle' | 'running' | 'success' | 'failure'>('idle');
+    const [status, setStatus] = useState<'idle' | 'running' | 'success' | 'failure' | 'cancelled'>('idle');
     const [rateLimit, setRateLimit] = useState<RateLimitState>({ remaining: 5, limit: 5, reset: 0 });
 
     const startTimeRef = useRef<number>(0);
+    const abortControllerRef = useRef<AbortController | null>(null);
     const posthog = usePostHog();
 
     // Fetch rate limit status on mount
@@ -52,10 +53,16 @@ export function useChallengeRunner(challenge: Challenge, user: any) {
     const submitSolution = async (code: string, onSuccess?: (executionTime: number) => void, onFailure?: () => void) => {
         if (isLoading) return;
 
+        // Create new AbortController for this submission
+        abortControllerRef.current = new AbortController();
+
         setIsLoading(true);
         setStatus('running');
         setOutput('');
         startTimeRef.current = Date.now();
+
+        // Generate unique idempotency key to prevent double-submissions
+        const idempotencyKey = crypto.randomUUID();
 
         try {
             const response = await fetch('/api/submit', {
@@ -64,8 +71,10 @@ export function useChallengeRunner(challenge: Challenge, user: any) {
                 body: JSON.stringify({
                     code,
                     challengeId: challenge.id,
-                    sandboxID
+                    sandboxID,
+                    idempotencyKey
                 }),
+                signal: abortControllerRef.current.signal,
             });
 
             // Parse Rate Limit Headers
@@ -88,6 +97,17 @@ export function useChallengeRunner(challenge: Challenge, user: any) {
                 setStatus('failure');
                 setIsLoading(false);
                 posthog?.capture('code_submitted', { challenge_id: challenge.id, result: 'rate_limited' });
+                return;
+            }
+
+            // Handle duplicate submission (idempotency check)
+            if (response.status === 409) {
+                toast.error('SUBMISSION IN PROGRESS', {
+                    style: { background: '#F59E0B', color: '#fff', fontFamily: 'monospace' },
+                    iconTheme: { primary: '#fff', secondary: '#F59E0B' },
+                });
+                setStatus('idle');
+                setIsLoading(false);
                 return;
             }
 
@@ -152,11 +172,30 @@ export function useChallengeRunner(challenge: Challenge, user: any) {
 
             setOutput(stripAnsi(buffer));
         } catch (error) {
-            setStatus('failure');
-            setOutput(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
-            toast.error('EXECUTION ERROR');
+            // Check if this was a user-initiated cancellation
+            if (error instanceof Error && error.name === 'AbortError') {
+                setStatus('cancelled');
+                setOutput(prev => prev + '\n\n⚠️ Execution cancelled by user.');
+                toast('EXECUTION CANCELLED', {
+                    style: { background: '#F59E0B', color: '#fff', fontFamily: 'monospace' },
+                    icon: '⏹️',
+                });
+                posthog?.capture('code_submitted', { challenge_id: challenge.id, result: 'cancelled' });
+            } else {
+                setStatus('failure');
+                setOutput(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+                toast.error('EXECUTION ERROR');
+            }
         } finally {
             setIsLoading(false);
+            abortControllerRef.current = null;
+        }
+    };
+
+    // Cancel a running submission
+    const cancelSubmission = () => {
+        if (abortControllerRef.current && isLoading) {
+            abortControllerRef.current.abort();
         }
     };
 
@@ -167,6 +206,7 @@ export function useChallengeRunner(challenge: Challenge, user: any) {
         status,
         rateLimit,
         submitSolution,
+        cancelSubmission,
         setStatus, // Exporting setStatus if needed for reset
         setOutput,
         setSandboxID

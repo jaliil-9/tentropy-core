@@ -25,9 +25,14 @@ export default function PageLoadingBar() {
                 if (timeoutRef.current) clearTimeout(timeoutRef.current);
                 if (intervalRef.current) clearInterval(intervalRef.current);
 
-                // Reset state
-                setProgress(0);
-                setLoading(false);
+                // Complete the progress bar first
+                setProgress(100);
+
+                // Add a small delay to ensure page content is rendered before hiding
+                setTimeout(() => {
+                    setProgress(0);
+                    setLoading(false);
+                }, 300);
             }
         };
 
@@ -67,7 +72,22 @@ export default function PageLoadingBar() {
         const handleClick = (e: MouseEvent) => {
             const target = e.target as HTMLElement;
             const link = target.closest('a');
-            if (link && link.href && !link.href.startsWith('#') && !link.target) {
+            if (link && link.href && !link.target) {
+                const hrefAttr = link.getAttribute('href');
+
+                // Skip pure hash links (#anchor)
+                if (hrefAttr && hrefAttr.startsWith('#')) return;
+
+                // Skip hash links to the current page (/#anchor or /current-path#anchor)
+                if (hrefAttr && hrefAttr.includes('#')) {
+                    const [linkPath, hash] = hrefAttr.split('#');
+                    const currentPath = window.location.pathname;
+                    // If link path is empty, '/', or matches current path, it's a same-page anchor
+                    if (hash && (linkPath === '' || linkPath === '/' || linkPath === currentPath)) {
+                        return;
+                    }
+                }
+
                 const currentDomain = window.location.origin;
                 const linkDomain = new URL(link.href, currentDomain).origin;
 

@@ -1,30 +1,7 @@
-@import "tailwindcss";
-@plugin "@tailwindcss/typography";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@theme {
-  --color-deep-anthracite: #09090B;
-  --color-carbon-grey: #121214;
-  --color-hazard-amber: #FFB000;
-  --color-terminal-green: #00E090;
-  --color-tungsten-grey: #27272A;
-
-  --font-mono: var(--font-mono);
-
-  --animate-spotlight: spotlight 2s ease .75s 1 forwards;
-  --animate-pulse-slow: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-
-  @keyframes spotlight {
-    0% {
-      opacity: 0;
-      transform: translate(-72%, -62%) scale(0.5);
-    }
-
-    100% {
-      opacity: 1;
-      transform: translate(-50%, -40%) scale(1);
-    }
-  }
-}
 
 :root {
   --background: #09090B;

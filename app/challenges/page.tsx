@@ -1,8 +1,8 @@
 'use client';
 
 import { challenges, tracks } from "@/data/challenges";
-import { useState } from "react";
-import Footer from "@/components/Footer";
+import { useState, Suspense } from "react";
+
 import { usePostHog } from "posthog-js/react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import ChallengeNode from "@/components/ChallengeNode";
@@ -10,9 +10,19 @@ import { Cpu, Server, ChevronDown, ChevronUp } from "lucide-react";
 import { useAllProgress } from "@/hooks/useAllProgress";
 import { getChallengeStatus } from "@/lib/challengeStatus";
 
-export default function ChallengesPage() {
+import { useSearchParams } from "next/navigation";
+
+function ChallengesContent() {
     const posthog = usePostHog();
-    const [activeTab, setActiveTab] = useState(tracks[0].id);
+    const searchParams = useSearchParams();
+    const trackParam = searchParams.get('track');
+
+    // Initialize activeTab from URL param if valid, otherwise default to first track
+    const initialTab = trackParam && tracks.some(t => t.id === trackParam)
+        ? trackParam
+        : tracks[0].id;
+
+    const [activeTab, setActiveTab] = useState(initialTab);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const { progressMap, loading } = useAllProgress();
 
@@ -118,5 +128,13 @@ export default function ChallengesPage() {
                 </Tabs>
             </main>
         </div>
+    );
+}
+
+export default function ChallengesPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen bg-deep-anthracite flex items-center justify-center text-white">Loading...</div>}>
+            <ChallengesContent />
+        </Suspense>
     );
 }

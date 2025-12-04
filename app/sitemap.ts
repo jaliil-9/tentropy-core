@@ -1,16 +1,7 @@
 import { MetadataRoute } from 'next';
-import { getChallenges } from '@/lib/challenges';
-import { Challenge } from '@/types/challenge';
+import { challenges } from '@/data/challenges';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-    let challenges: Challenge[] = [];
-
-    try {
-        challenges = await getChallenges();
-    } catch (error) {
-        // If database fails, return minimal sitemap
-        console.error('Failed to fetch challenges for sitemap:', error);
-    }
 
     const baseUrl = 'https://tentropy.co';
 

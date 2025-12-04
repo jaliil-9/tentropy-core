@@ -1,7 +1,7 @@
 import React from 'react';
 import Editor, { Monaco } from '@monaco-editor/react';
-import type * as MonacoEditor from 'monaco-editor';
-import { FileCode, Plus, X, Loader2, Play, Eye, Save, Lock } from 'lucide-react';
+import type { editor } from 'monaco-editor';
+import { FileCode, Plus, X, Loader2, Play, Eye, Save, Lock, Square } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import SyncIndicator from '@/components/SyncIndicator';
 import { Tab } from '@/hooks/useChallengeState';
@@ -15,9 +15,10 @@ interface EditorPanelProps {
     updateTabContent: (value: string | undefined) => void;
     addNewTab: () => void;
     closeTab: (e: React.MouseEvent, id: string) => void;
-    setEditorInstance: (editor: MonacoEditor.editor.IStandaloneCodeEditor) => void;
+    setEditorInstance: (editor: editor.IStandaloneCodeEditor) => void;
     setMonacoInstance: (monaco: Monaco) => void;
     submitSolution: () => void;
+    cancelSubmission: () => void;
     isLoading: boolean;
     revealSolution: () => void;
     isAuthenticated: boolean;
@@ -31,6 +32,7 @@ interface EditorPanelProps {
     isMobile: boolean;
     activeTab: Tab;
     posthog?: any;
+    showPiiWarning?: boolean;
 }
 
 export default function EditorPanel({
@@ -44,6 +46,7 @@ export default function EditorPanel({
     setEditorInstance,
     setMonacoInstance,
     submitSolution,
+    cancelSubmission,
     isLoading,
     revealSolution,
     isAuthenticated,
@@ -56,10 +59,11 @@ export default function EditorPanel({
     isLocked,
     isMobile,
     activeTab,
-    posthog
+    posthog,
+    showPiiWarning
 }: EditorPanelProps) {
     return (
-        <div className="h-full flex flex-col bg-deep-anthracite">
+        <div className="h-full flex flex-col bg-deep-anthracite relative">
             {/* Editor Header */}
             <div className="h-10 border-b border-tungsten-grey bg-carbon-grey/50 flex items-center justify-between px-2 shrink-0 relative z-20">
                 <div className="flex items-center gap-1 h-full pt-1 overflow-x-auto scrollbar-none min-w-0 flex-1 mr-2">
@@ -92,28 +96,55 @@ export default function EditorPanel({
                 <div className="flex items-center gap-2 ml-2">
                     <button
                         onClick={submitSolution}
-                        disabled={isLoading}
+                        disabled={isLoading || isLocked}
                         className={cn(
-                            "flex items-center gap-2 px-3 md:px-4 py-1.5 text-xs font-bold tracking-wider transition-all border border-hazard-amber/50 shrink-0",
-                            isLoading
-                                ? "bg-hazard-amber/10 text-hazard-amber/50 cursor-not-allowed"
-                                : "bg-hazard-amber/10 text-hazard-amber hover:bg-hazard-amber hover:text-black shadow-[0_0_10px_rgba(255,176,0,0.3)] hover:shadow-[0_0_15px_rgba(255,176,0,0.6)]"
+                            "flex items-center gap-2 px-3 md:px-4 py-1.5 text-xs font-bold tracking-wider transition-all border shrink-0",
+                            isLoading || isLocked
+                                ? "bg-tungsten-grey/10 border-tungsten-grey text-gray-500 cursor-not-allowed"
+                                : "bg-hazard-amber/10 border-hazard-amber/50 text-hazard-amber hover:bg-hazard-amber hover:text-black shadow-[0_0_10px_rgba(255,176,0,0.3)] hover:shadow-[0_0_15px_rgba(255,176,0,0.6)]"
                         )}
+                        title={isLocked ? "Unlock previous missions to execute code" : "Execute Code"}
                     >
                         <span className="relative z-10 flex items-center gap-2">
-                            {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4 fill-current" />}
-                            <span className="hidden md:inline">{isLoading ? 'PATCHING...' : 'EXECUTE'}</span>
+                            {isLoading ? (
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : isLocked ? (
+                                <Lock className="w-4 h-4" />
+                            ) : (
+                                <Play className="w-4 h-4 fill-current" />
+                            )}
+                            <span className="hidden md:inline">
+                                {isLoading ? 'PATCHING...' : 'EXECUTE'}
+                            </span>
                         </span>
                     </button>
+
+                    {/* Cancel button - only show when loading */}
+                    {isLoading && (
+                        <button
+                            onClick={cancelSubmission}
+                            className="flex items-center gap-2 px-3 md:px-4 py-1.5 text-xs font-bold tracking-wider transition-all border border-red-500/50 text-red-500 hover:bg-red-500/10 shrink-0"
+                            title="Cancel Execution"
+                        >
+                            <Square className="w-4 h-4 fill-current" />
+                            <span className="hidden md:inline">CANCEL</span>
+                        </button>
+                    )}
 
                     {(challenge.solutionCode || challenge.hasSolution) && (
                         <button
                             onClick={revealSolution}
-                            className="flex items-center gap-2 px-3 md:px-4 py-1.5 text-xs font-bold tracking-wider transition-all border border-tungsten-grey text-gray-400 hover:text-white hover:border-white/50 shrink-0"
-                            title="Reveal Solution"
+                            disabled={isLocked}
+                            className={cn(
+                                "flex items-center gap-2 px-3 md:px-4 py-1.5 text-xs font-bold tracking-wider transition-all border shrink-0",
+                                isLocked
+                                    ? "bg-tungsten-grey/10 border-tungsten-grey text-gray-500 cursor-not-allowed"
+                                    : "border-tungsten-grey text-gray-400 hover:text-white hover:border-white/50"
+                            )}
+                            title={isLocked ? "Unlock previous missions to reveal solution" : "Reveal Solution"}
                         >
-                            <Eye className="w-4 h-4" />
-                            <span className="hidden md:inline">SOLUTION</span>
+                            {isLocked ? <Lock className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                            <span className="hidden md:inline">{'SOLUTION'}</span>
                         </button>
                     )}
 
@@ -153,15 +184,6 @@ export default function EditorPanel({
 
             {/* Editor Instance */}
             <div className="flex-1 relative min-h-0">
-                {isLocked && (
-                    <div className="absolute inset-0 z-50 bg-deep-anthracite/90 backdrop-blur-sm flex flex-col items-center justify-center text-center p-6">
-                        <Lock className="w-12 h-12 text-gray-500 mb-4" />
-                        <h3 className="text-xl font-bold text-white mb-2">MISSION LOCKED</h3>
-                        <p className="text-gray-400 max-w-md">
-                            Complete previous missions to unlock this challenge.
-                        </p>
-                    </div>
-                )}
                 <Editor
                     height="100%"
                     defaultLanguage="python"
@@ -193,9 +215,16 @@ export default function EditorPanel({
                         cursorBlinking: 'phase',
                         cursorStyle: 'block',
                         scrollBeyondLastLine: false,
+                        readOnly: isLocked,
                     }}
                 />
             </div>
+
+            {showPiiWarning && (
+                <div className="absolute bottom-0 right-0 left-0 bg-deep-anthracite/80 backdrop-blur-sm border-t border-tungsten-grey px-4 py-1 text-[10px] text-gray-500 flex justify-end pointer-events-none z-10">
+                    <span>⚠️ Do not include PII or secrets in your code.</span>
+                </div>
+            )}
         </div>
     );
 }

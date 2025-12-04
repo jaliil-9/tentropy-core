@@ -500,6 +500,7 @@ export default function ChallengeInterface({ challenge }: ChallengeInterfaceProp
                     setEditorInstance={setEditorInstance}
                     setMonacoInstance={setMonacoInstance}
                     submitSolution={handleSubmit}
+                    cancelSubmission={runner.cancelSubmission}
                     isLoading={runner.isLoading}
                     revealSolution={revealSolutionHandler}
                     isAuthenticated={isAuthenticated}
@@ -513,6 +514,7 @@ export default function ChallengeInterface({ challenge }: ChallengeInterfaceProp
                     isMobile={isMobile}
                     activeTab={activeTab}
                     posthog={posthog}
+                    showPiiWarning={true}
                 />
             </Panel>
 
@@ -778,7 +780,7 @@ export default function ChallengeInterface({ challenge }: ChallengeInterfaceProp
                 trackTitle={unlockedTrackTitle}
             />
 
-            {isMobile && !hasRevealedSolution && challenge.solutionCode && (
+            {isMobile && !hasRevealedSolution && (challenge.solutionCode || challenge.hasSolution) && !isLocked && (
                 <div className="fixed bottom-0 left-0 right-0 bg-deep-anthracite border-t border-hazard-amber p-4 z-50 flex items-center justify-between animate-in slide-in-from-bottom duration-500">
                     <div className="flex items-center gap-3">
                         <div className="p-2 bg-hazard-amber/10 rounded-full text-hazard-amber shrink-0">
@@ -792,6 +794,13 @@ export default function ChallengeInterface({ challenge }: ChallengeInterfaceProp
                     <button onClick={revealSolutionHandler} className="px-4 py-2 bg-hazard-amber text-black text-xs font-bold rounded shadow-lg hover:bg-hazard-amber/90 transition-colors">
                         REVEAL
                     </button>
+                </div>
+            )}
+
+            {isLocked && (
+                <div className="fixed bottom-0 left-0 right-0 z-[100] bg-deep-anthracite/95 border-t border-hazard-amber backdrop-blur-md p-4 flex items-center justify-center gap-3 animate-in slide-in-from-bottom duration-500 shadow-[0_-5px_20px_rgba(0,0,0,0.5)]">
+                    <Lock className="w-5 h-5 text-hazard-amber animate-pulse" />
+                    <span className="text-sm font-bold text-hazard-amber tracking-widest">PREVIEW MODE — SOLVE PREVIOUS MISSIONS TO UNLOCK</span>
                 </div>
             )}
         </div>

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Github, Chrome, Mail, Lock, ArrowRight, User, Loader2 } from 'lucide-react';
+import { Github, Chrome, Mail, Lock, ArrowRight, User, Loader2, Eye, EyeOff } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { signup, signInWithOAuth } from '@/app/auth/actions';
 import toast from 'react-hot-toast';
@@ -10,6 +10,7 @@ import { useSearchParams } from 'next/navigation';
 
 export default function SignupForm() {
     const [isLoading, setIsLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const [guestId, setGuestId] = useState<string>('');
     const searchParams = useSearchParams();
     const next = searchParams.get('next');
@@ -52,7 +53,9 @@ export default function SignupForm() {
                                         src="/icon.jpg"
                                         alt="Tentropy"
                                         fill
-                                        className="object-cover"
+                                        sizes="48px"
+                                        unoptimized
+                                        className="object-contain"
                                     />
                                 </div>
                             </div>
@@ -95,12 +98,31 @@ export default function SignupForm() {
                                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                                     <input
                                         name="password"
-                                        type="password"
+                                        type={showPassword ? "text" : "password"}
                                         placeholder="••••••••"
                                         className="w-full bg-carbon-grey border border-tungsten-grey rounded px-10 py-2 text-sm text-white placeholder:text-gray-600 focus:outline-none focus:border-hazard-amber transition-colors"
                                         required
                                     />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors"
+                                    >
+                                        {showPassword ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                                    </button>
                                 </div>
+                            </div>
+
+                            <div className="flex items-center gap-2 py-2">
+                                <input
+                                    type="checkbox"
+                                    id="terms"
+                                    required
+                                    className="appearance-none w-4 h-4 rounded border border-tungsten-grey bg-transparent checked:bg-hazard-amber checked:border-hazard-amber checked:bg-[url('data:image/svg+xml,%3csvg%20viewBox=%270%200%2016%2016%27%20fill=%27black%27%20xmlns=%27http://www.w3.org/2000/svg%27%3e%3cpath%20d=%27M12.207%204.793a1%201%200%20010%201.414l-5%205a1%201%200%2001-1.414%200l-2-2a1%201%200%20011.414-1.414L6.5%209.086l4.293-4.293a1%201%200%20011.414%200z%27/%3e%3c/svg%3e')] checked:bg-center checked:bg-no-repeat focus:ring-0 focus:outline-none cursor-pointer transition-all"
+                                />
+                                <label htmlFor="terms" className="text-xs text-gray-500 cursor-pointer select-none">
+                                    I agree to the <Link href="/terms" target="_blank" className="text-hazard-amber hover:underline">Terms</Link> and <Link href="/privacy" target="_blank" className="text-hazard-amber hover:underline">Privacy Policy</Link>
+                                </label>
                             </div>
 
                             <button

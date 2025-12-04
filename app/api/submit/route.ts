@@ -3,29 +3,81 @@ import { getChallengeById } from '@/lib/challenges';
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 import { logger } from '@/lib/logger';
+import { createClient } from '@/utils/supabase/server';
 
-// Create a new ratelimiter, that allows 5 requests per 10 minutes
-const ratelimit = new Ratelimit({
-    redis: Redis.fromEnv(),
-    limiter: Ratelimit.slidingWindow(5, "10 m"),
+// Initialize Redis client (reused for rate limiting and idempotency)
+const redis = process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
+    ? Redis.fromEnv()
+    : null;
+
+// Rate limiter for anonymous users (IP-based): 5 requests per 30 minutes
+const anonymousRatelimit = redis ? new Ratelimit({
+    redis,
+    limiter: Ratelimit.slidingWindow(5, "30 m"),
     analytics: true,
-    prefix: "@upstash/ratelimit",
-});
+    prefix: "ratelimit:anon",
+}) : null;
+
+// Rate limiter for authenticated users (user ID-based): 5 requests per 30 minutes
+const authenticatedRatelimit = redis ? new Ratelimit({
+    redis,
+    limiter: Ratelimit.slidingWindow(5, "30 m"),
+    analytics: true,
+    prefix: "ratelimit:auth",
+}) : null;
 
 export async function POST(req: Request) {
     try {
-        // Rate Limit Check
-        const ip = req.headers.get('x-forwarded-for') ?? '127.0.0.1';
+        // Get authenticated user (if any)
+        const supabase = await createClient();
+        const { data: { user } } = await supabase.auth.getUser();
 
-        let rateLimitInfo = { limit: 5, remaining: 5, reset: 0 };
+        // Extract IP address (use first IP if comma-separated proxies)
+        const forwardedFor = req.headers.get('x-forwarded-for');
+        const ip = forwardedFor?.split(',')[0].trim() ?? '127.0.0.1';
 
-        // Only check rate limit if Redis env vars are present to avoid crashing in dev without them
-        if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
-            const { success, limit, reset, remaining } = await ratelimit.limit(ip);
+        // Parse request body early to get idempotency key
+        const body = await req.json();
+        const { code, challengeId, sandboxID, idempotencyKey } = body;
+
+        // ==================== IDEMPOTENCY CHECK ====================
+        if (idempotencyKey && redis) {
+            const existingRun = await redis.get(`idem:${idempotencyKey}`);
+            if (existingRun) {
+                logger.info(`[API Submit] Duplicate submission blocked: ${idempotencyKey}`);
+                return new Response(JSON.stringify({
+                    error: 'Duplicate submission detected. Please wait for your previous submission to complete.',
+                    status: existingRun
+                }), {
+                    status: 409,
+                    headers: { 'Content-Type': 'application/json' }
+                });
+            }
+            // Mark this submission as in-progress (5 minute TTL)
+            await redis.set(`idem:${idempotencyKey}`, 'pending', { ex: 300 });
+        }
+
+        // ==================== RATE LIMIT CHECK ====================
+        // Use composite key: userId for auth users, IP for anonymous
+        const rateLimitKey = user ? `user:${user.id}` : `ip:${ip}`;
+        const limiter = user ? authenticatedRatelimit : anonymousRatelimit;
+        const limitValue = 5; // Same limit for both auth and anon
+
+        let rateLimitInfo = { limit: limitValue, remaining: limitValue, reset: 0 };
+
+        if (limiter) {
+            const { success, limit, reset, remaining } = await limiter.limit(rateLimitKey);
             rateLimitInfo = { limit, remaining, reset };
 
             if (!success) {
-                return new Response(JSON.stringify({ error: "Rate limit exceeded. You have 5 runs every 10m." }), {
+                // Clean up idempotency key if rate limited
+                if (idempotencyKey && redis) {
+                    await redis.del(`idem:${idempotencyKey}`);
+                }
+
+                const message = `Rate limit exceeded. You have ${limit} runs every 30 minutes.`;
+
+                return new Response(JSON.stringify({ error: message }), {
                     status: 429,
                     headers: {
                         'Content-Type': 'application/json',
@@ -37,24 +89,22 @@ export async function POST(req: Request) {
             }
         } else {
             // Fallback for local dev without Redis
-            // Use a simple global variable (note: this resets on server restart/hot reload)
-            // We attach it to globalThis to persist across hot reloads in dev
             const globalStore = globalThis as any;
             if (!globalStore.localRateLimit) {
                 globalStore.localRateLimit = new Map<string, { count: number, reset: number }>();
             }
 
             const now = Date.now();
-            const window = 10 * 60 * 1000; // 10m
+            const window = 30 * 60 * 1000; // 30m
             const limit = 5;
 
-            let record = globalStore.localRateLimit.get(ip);
+            let record = globalStore.localRateLimit.get(rateLimitKey);
             if (!record || now > record.reset) {
                 record = { count: 0, reset: now + window };
             }
 
             record.count++;
-            globalStore.localRateLimit.set(ip, record);
+            globalStore.localRateLimit.set(rateLimitKey, record);
 
             const remaining = Math.max(0, limit - record.count);
             rateLimitInfo = { limit, remaining, reset: record.reset };
@@ -72,9 +122,12 @@ export async function POST(req: Request) {
             }
         }
 
-        const { code, challengeId, sandboxID } = await req.json();
-
+        // ==================== VALIDATION ====================
         if (!code || !challengeId) {
+            // Clean up idempotency key on validation failure
+            if (idempotencyKey && redis) {
+                await redis.del(`idem:${idempotencyKey}`);
+            }
             return new Response(JSON.stringify({ error: 'Missing code or challengeId' }), {
                 status: 400,
                 headers: { 'Content-Type': 'application/json' }
@@ -83,6 +136,9 @@ export async function POST(req: Request) {
 
         const challenge = await getChallengeById(challengeId);
         if (!challenge) {
+            if (idempotencyKey && redis) {
+                await redis.del(`idem:${idempotencyKey}`);
+            }
             return new Response('Challenge not found', { status: 404 });
         }
 
@@ -105,7 +161,7 @@ export async function POST(req: Request) {
                         const templateId = process.env.E2B_TEMPLATE_ID || 'base';
                         sandbox = await Sandbox.create(templateId, {
                             apiKey: process.env.E2B_API_KEY,
-                            timeoutMs: 10000 // 10s timeout to save costs and prevent abuse
+                            timeoutMs: 60000 // 60s timeout to allow for pip install
                         });
                     }
 
@@ -113,7 +169,11 @@ export async function POST(req: Request) {
                     await sandbox.files.write('solution.py', code);
                     await sandbox.files.write('test_main.py', challenge.testCode);
 
-                    // 3. Run Tests (Dependencies pre-installed in custom template)
+                    // 3. Install Dependencies (Restored)
+                    controller.enqueue(encoder.encode("Installing dependencies...\n"));
+                    await sandbox.commands.run('pip install pytest requests');
+
+                    // 4. Run Tests
                     controller.enqueue(encoder.encode("Running tests...\n\n"));
 
                     // 4. Run Tests with Streaming
@@ -153,6 +213,12 @@ export async function POST(req: Request) {
                     const result = { success: false, sandboxID: sandbox?.sandboxId };
                     controller.enqueue(encoder.encode(`\n__JSON_RESULT__:${JSON.stringify(result)}`));
                 } finally {
+                    // Clean up idempotency key after execution completes
+                    if (idempotencyKey && redis) {
+                        redis.del(`idem:${idempotencyKey}`).catch((e) =>
+                            logger.error('[API Submit] Failed to delete idempotency key:', e)
+                        );
+                    }
                     controller.close();
                 }
             }

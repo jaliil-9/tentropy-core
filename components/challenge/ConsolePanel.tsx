@@ -6,7 +6,7 @@ import { RateLimitState } from '@/hooks/useChallengeRunner';
 
 interface ConsolePanelProps {
     output: string;
-    status: 'idle' | 'running' | 'success' | 'failure';
+    status: 'idle' | 'running' | 'success' | 'failure' | 'cancelled';
     rateLimit: RateLimitState;
 }
 
@@ -24,6 +24,18 @@ export default function ConsolePanel({
         }
     }, [output]);
 
+    const getStatusDisplay = () => {
+        switch (status) {
+            case 'running': return { text: 'PROCESSING...', classes: 'border-hazard-amber text-hazard-amber animate-pulse' };
+            case 'success': return { text: 'PATCH SUCCESSFUL', classes: 'border-terminal-green text-terminal-green' };
+            case 'failure': return { text: 'PATCH FAILED', classes: 'border-red-500 text-red-500' };
+            case 'cancelled': return { text: 'CANCELLED', classes: 'border-orange-500 text-orange-500' };
+            default: return null;
+        }
+    };
+
+    const statusDisplay = getStatusDisplay();
+
     return (
         <div className="h-full flex flex-col bg-carbon-grey border-t border-tungsten-grey">
             <div className="h-8 flex items-center justify-between px-4 border-b border-tungsten-grey bg-carbon-grey shrink-0">
@@ -36,14 +48,12 @@ export default function ConsolePanel({
                         limit={rateLimit.limit}
                         reset={rateLimit.reset}
                     />
-                    {status !== 'idle' && (
+                    {statusDisplay && (
                         <span className={cn(
                             "text-[10px] font-bold uppercase px-2 py-0.5 border",
-                            status === 'success' ? "border-terminal-green text-terminal-green" :
-                                status === 'failure' ? "border-red-500 text-red-500" :
-                                    "border-hazard-amber text-hazard-amber animate-pulse"
+                            statusDisplay.classes
                         )}>
-                            {status === 'running' ? 'PROCESSING...' : status === 'success' ? 'PATCH SUCCESSFUL' : 'PATCH FAILED'}
+                            {statusDisplay.text}
                         </span>
                     )}
                 </div>

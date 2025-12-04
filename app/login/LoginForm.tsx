@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Github, Chrome, Mail, Lock, ArrowRight, Loader2 } from 'lucide-react';
+import { Github, Chrome, Mail, Lock, ArrowRight, Loader2, Eye, EyeOff } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { login, signInWithOAuth } from '@/app/auth/actions';
 import toast from 'react-hot-toast';
@@ -10,6 +10,7 @@ import { useSearchParams } from 'next/navigation';
 
 export default function LoginForm() {
     const [isLoading, setIsLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const [guestId, setGuestId] = useState<string>('');
     const searchParams = useSearchParams();
     const next = searchParams.get('next');
@@ -52,7 +53,9 @@ export default function LoginForm() {
                                         src="/icon.jpg"
                                         alt="Tentropy"
                                         fill
-                                        className="object-cover"
+                                        sizes="48px"
+                                        unoptimized
+                                        className="object-contain"
                                     />
                                 </div>
                             </div>
@@ -75,7 +78,7 @@ export default function LoginForm() {
                                 </div>
                             </div>
 
-                            <div className="space-y-2">
+                            <div className="space-y-2 mb-6">
                                 <div className="flex items-center justify-between">
                                     <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">Password</label>
                                     <Link href="#" className="text-xs text-hazard-amber hover:underline">Forgot?</Link>
@@ -84,13 +87,22 @@ export default function LoginForm() {
                                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                                     <input
                                         name="password"
-                                        type="password"
+                                        type={showPassword ? "text" : "password"}
                                         placeholder="••••••••"
                                         className="w-full bg-carbon-grey border border-tungsten-grey rounded px-10 py-2 text-sm text-white placeholder:text-gray-600 focus:outline-none focus:border-hazard-amber transition-colors"
                                         required
                                     />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors"
+                                    >
+                                        {showPassword ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                                    </button>
                                 </div>
                             </div>
+
+
 
                             <button
                                 type="submit"

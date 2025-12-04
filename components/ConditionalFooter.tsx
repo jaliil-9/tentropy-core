@@ -1,15 +1,15 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import Footer from './Footer';
+import EnhancedFooter from './EnhancedFooter';
 
 export default function ConditionalFooter() {
     const pathname = usePathname();
 
-    // Hide footer on challenge pages
-    const hideFooter = pathname?.startsWith('/challenge/');
+    // Hide footer on challenge pages and auth pages
+    const hideFooter = pathname?.startsWith('/challenge/') || pathname === '/login' || pathname === '/signup';
 
     if (hideFooter) return null;
 
-    return <Footer />;
+    return <EnhancedFooter />;
 }

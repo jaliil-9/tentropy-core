@@ -1,5 +1,5 @@
 import { Challenge } from "@/types/challenge";
-import { Check, Lock, Play, Terminal } from "lucide-react";
+import { Check, Lock, Play, Terminal, Eye } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
@@ -39,7 +39,7 @@ export default function ChallengeNode({ challenge, status, index, isLast }: Chal
             {/* Content Card */}
             <div className={cn(
                 "flex-1 mb-8 relative transition-all duration-300",
-                status === 'locked' ? "opacity-60 grayscale" : "opacity-100"
+                status === 'locked' ? "opacity-90" : "opacity-100"
             )}>
                 <div className={cn(
                     "bg-carbon-grey/30 border rounded-lg p-6 transition-all duration-300",
@@ -96,15 +96,15 @@ export default function ChallengeNode({ challenge, status, index, isLast }: Chal
                         ) : (
                             <Link
                                 href={`/challenge/${challenge.id}`}
-                                className="flex items-center gap-2 px-6 py-2 border border-tungsten-grey text-gray-500 font-mono text-sm rounded hover:border-gray-400 hover:text-gray-400 transition-colors"
+                                className="flex items-center gap-2 px-6 py-2 border border-tungsten-grey text-gray-400 font-mono text-sm rounded hover:border-gray-300 hover:text-gray-300 transition-colors"
                             >
-                                <Lock className="w-3 h-3" />
-                                LOCKED
+                                <Eye className="w-4 h-4" />
+                                PREVIEW MISSION
                             </Link>
                         )}
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 }

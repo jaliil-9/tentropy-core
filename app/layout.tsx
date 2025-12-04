@@ -3,8 +3,6 @@ import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import PageLoadingBar from "@/components/PageLoadingBar";
 
-import NavBar from "@/components/NavBar";
-
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-mono",
   subsets: ["latin"],
@@ -15,6 +13,10 @@ export const metadata: Metadata = {
   title: "TENTROPY | AI System Design",
   description: "Experience AI engineering by repairing broken pipelines. Build, break, and fix systems in a realistic simulated environment. Practice system design, LLM optimization, RAG, and latency reduction.",
   keywords: ["AI engineering", "LLM optimization", "system design", "RAG", "APIs", "coding simulation", "machine learning", "devops", "sre", "build break fix"],
+  icons: {
+    icon: '/icon.jpg',
+    apple: '/icon.jpg',
+  },
   openGraph: {
     title: "TENTROPY | Build, Break, Fix: AI System Design",
     description: "Experience AI engineering by repairing broken pipelines. Build, break, and fix systems in a realistic simulated environment.",
@@ -36,8 +38,9 @@ import PostHogPageView from "@/app/providers/PostHogPageView";
 import { Suspense } from "react";
 import PostHogIdentifier from "@/app/providers/PostHogIdentifier";
 import SaveProgressBanner from "@/components/SaveProgressBanner";
-import Footer from "@/components/Footer";
+
 import ConditionalFooter from "@/components/ConditionalFooter";
+import CookieConsent from "@/components/CookieConsent";
 
 export default function RootLayout({
   children,
@@ -56,12 +59,12 @@ export default function RootLayout({
             </Suspense>
             <PostHogIdentifier />
             <PageLoadingBar />
-            <NavBar />
             <div className="min-h-screen">
               {children}
             </div>
             <ConditionalFooter />
             <SaveProgressBanner />
+            <CookieConsent />
           </AuthProvider>
         </PostHogProvider>
       </body>
