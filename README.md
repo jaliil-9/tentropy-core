@@ -1,88 +1,79 @@
-# TENTROPY
+# TENTROPY (Open Core)
 
-**Engineering Platform for AI Systems.**
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
+[![Next.js](https://img.shields.io/badge/Next.js-15-black)](https://nextjs.org/)
+[![E2B](https://img.shields.io/badge/E2B-Sandboxed-orange)](https://e2b.dev/)
 
-TENTROPY is a reliability and evaluation platform designed to stress-test LLM workflows, agents, and RAG pipelines logics. It provides isolated, micro-VM environments to simulate real-world failures, ensuring deep understanding of designing AI systems that are robust, predictable, and production-ready.
+**The Engineering Platform for AI Systems.**
 
----
+Tentropy is a platform for mastering AI system design through realistic, hands-on coding challenges. This repository contains the **Open Source Core** of the platform, allowing you to run the execution engine and solve challenges locally.
 
-## Mission
-
-We offer a curated suite of engineering challenges ("Missions") designed to train AI Architects in the fundamental patterns of reliable LLM system design. From context window management to hallucination guardrails required for the next generation of AI engineering.
-
----
-
-## Key Features
-
-- **Isolated Execution Environments**: Every challenge runs in a secure, ephemeral micro-VM (powered by E2B), ensuring safe and reproducible code execution.
-- **Real-World Engineering Missions**: Solve practical problems like "Regex Catastrophic Backtracking", "Token Bucket Rate Limiting", and "RAG Hallucination Traps".
-- **Automated Evaluation**: Instant feedback on correctness, performance, and system behavior.
-- **Tech Stack**: Built with Next.js 15, React 19, Supabase, and Tailwind CSS.
+[**🌐 Try the Hosted Platform (Free)**](https://tentropy.co) | [**📚 Documentation**](https://tentropy.co/docs)
 
 ---
 
-## Tech Stack
+## 🚀 Features
 
-- **Framework**: [Next.js](https://nextjs.org/) (App Router)
-- **Language**: TypeScript
-- **Database**: [Supabase](https://supabase.com/) (PostgreSQL)
-- **KV Store**: [Upstash Redis](https://upstash.com/) (Rate limiting & caching)
-- **Execution Engine**: [E2B](https://e2b.dev/) (Sandboxed Cloud Environments)
-- **Editor**: Monaco Editor (VS Code experience)
-- **Styling**: Tailwind CSS + Lucide Icons
-- **Analytics**: PostHog
+- **Real Simulation**: Challenges run in isolated **Firecracker micro-VMs** (via E2B), not just browser mocks.
+- **System Design Focus**: Debug race conditions, memory leaks, and distributed system failures.
+- **Modern Stack**: Built with Next.js 15, React 19, Supabase, and TailwindCSS.
 
-<<<<<<< HEAD
-[Add your license here]
-=======
----
+## ⚖️ Open Core vs Hosted
 
-## Installation
+| Feature | Open Core (This Repo) | Hosted Platform (tentropy.co) |
+|---------|----------------------|-------------------------------|
+| **Engine** | ✅ Full Execution Engine | ✅ Full Execution Engine |
+| **Challenges** | ⚠️ 4 Sample Challenges | ✅ All Challenges (10+) |
+| **Setup** | 🛠️ Self-Hosted (Bring your keys) | ⚡ Instant (Zero Config) |
+| **Progress** | ❌ Local Only | ✅ Cloud Sync & History |
+| **Certificates** | ❌ Not Included | ✅ Verified Certificates |
 
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/jaliil-9/tentropy-core.git
-    cd tentropy
-    ```
+## 🛠️ Getting Started
 
-2.  **Install dependencies:**
-    ```bash
-    npm install
-    ```
+### Prerequisites
+- Node.js 18+
+- Supabase Account (for Auth/DB)
+- E2B Account (for Sandboxes)
+- Upstash Redis (for Rate Limiting)
 
-3.  **Set up environment variables:**
-    Create a `.env.local` file in the root directory and add your credentials:
-    ```env
-    NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_key
-    E2B_API_KEY=your_e2b_api_key
-    UPSTASH_REDIS_REST_URL=your_redis_url
-    UPSTASH_REDIS_REST_TOKEN=your_redis_token
-    ```
+### Installation
 
-4.  **Run the development server:**
-    ```bash
-    npm run dev
-    ```
+1. **Clone the repo**
+   ```bash
+   git clone https://github.com/jaliil-9/tentropy-core.git
+   cd tentropy-core
+   ```
 
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-## Contributing
+3. **Setup Environment**
+   Copy the template and fill in your API keys:
+   ```bash
+   cp .env.example .env.local
+   ```
 
-We welcome contributions from the community! Whether it's adding a new challenge, fixing a bug, or improving documentation, your help is appreciated.
+4. **Run Development Server**
+   ```bash
+   npm run dev
+   ```
+   Open [http://localhost:3000](http://localhost:3000) to start solving.
 
-Please read our [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+## 🏗️ Tech Stack
 
-1.  Fork the project.
-2.  Create your feature branch (`git checkout -b feature/AmazingFeature`).
-3.  Commit your changes (`git commit -m 'Add some AmazingFeature'`).
-4.  Push to the branch (`git push origin feature/AmazingFeature`).
-5.  Open a Pull Request.
+- **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
+- **Database**: [Supabase](https://supabase.com/) (PostgreSQL + Auth)
+- **Execution**: [E2B](https://e2b.dev/) (Firecracker micro-VMs)
+- **Rate Limiting**: [Upstash Redis](https://upstash.com/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
 
----
+## 🤝 Contributing
 
-## License
+We welcome contributions! Whether it's adding a new challenge, fixing a bug, or improving documentation.
+Please read our [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+
+## 📄 License
 
 Distributed under the Apache 2.0 License. See [LICENSE](LICENSE) for more information.
-
----
->>>>>>> 6b31300d5ea319d4263d84c2302cc01fda4754e6
