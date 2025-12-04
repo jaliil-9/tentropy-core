@@ -6,29 +6,20 @@
 
 **The Engineering Platform for AI Systems.**
 
-Tentropy is a platform for mastering AI system design through realistic, hands-on coding challenges. This repository contains the **Open Source Core** of the platform, allowing you to run the execution engine and solve challenges locally.
+Tentropy is a platform for AI system design realistic, hands-on coding challenges. This repository contains the **Open Source Core** of the platform, allowing you to run the execution engine and solve challenges locally.
 
-[**🌐 Try the Hosted Platform (Free)**](https://tentropy.co) | [**📚 Documentation**](https://tentropy.co/docs)
+[**Try the Hosted Platform (Free)**](https://tentropy.co) | [**Documentation**](https://tentropy.co/docs)
 
 ---
 
-## 🚀 Features
+## Features
 
 - **Real Simulation**: Challenges run in isolated **Firecracker micro-VMs** (via E2B), not just browser mocks.
 - **System Design Focus**: Debug race conditions, memory leaks, and distributed system failures.
 - **Modern Stack**: Built with Next.js 15, React 19, Supabase, and TailwindCSS.
 
-## ⚖️ Open Core vs Hosted
 
-| Feature | Open Core (This Repo) | Hosted Platform (tentropy.co) |
-|---------|----------------------|-------------------------------|
-| **Engine** | ✅ Full Execution Engine | ✅ Full Execution Engine |
-| **Challenges** | ⚠️ 4 Sample Challenges | ✅ All Challenges (10+) |
-| **Setup** | 🛠️ Self-Hosted (Bring your keys) | ⚡ Instant (Zero Config) |
-| **Progress** | ❌ Local Only | ✅ Cloud Sync & History |
-| **Certificates** | ❌ Not Included | ✅ Verified Certificates |
-
-## 🛠️ Getting Started
+## Getting Started
 
 ### Prerequisites
 - Node.js 18+
@@ -55,13 +46,8 @@ Tentropy is a platform for mastering AI system design through realistic, hands-o
    cp .env.example .env.local
    ```
 
-4. **Run Development Server**
-   ```bash
-   npm run dev
-   ```
-   Open [http://localhost:3000](http://localhost:3000) to start solving.
 
-## 🏗️ Tech Stack
+## Tech Stack
 
 - **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
 - **Database**: [Supabase](https://supabase.com/) (PostgreSQL + Auth)
@@ -69,11 +55,11 @@ Tentropy is a platform for mastering AI system design through realistic, hands-o
 - **Rate Limiting**: [Upstash Redis](https://upstash.com/)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/)
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions! Whether it's adding a new challenge, fixing a bug, or improving documentation.
 Please read our [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
-## 📄 License
+## License
 
 Distributed under the Apache 2.0 License. See [LICENSE](LICENSE) for more information.
