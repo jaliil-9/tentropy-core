@@ -2,6 +2,7 @@
 **CTF-Style Challenges for AI Systems Engineering**
 > *The skills that make AI systems production-ready aren't taught in ML courses.*  
 > *TENTROPY teaches them through real-world failure scenarios.*
+
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Next.js](https://img.shields.io/badge/Next.js-15-black)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
