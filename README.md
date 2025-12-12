@@ -59,8 +59,6 @@ Most AI education focuses on model training. TENTROPY focuses on what happens af
 ## Learning Tracks
 
 ### Systems Resilience
-*The fundamentals that every backend engineer needs*
-
 - ReDoS attacks and catastrophic backtracking
 - Rate limiting with Token Bucket algorithms
 - Retry storms and exponential backoff with jitter
@@ -68,8 +66,6 @@ Most AI education focuses on model training. TENTROPY focuses on what happens af
 - N+1 query detection and batch optimization
 
 ### The AI Architect  
-*The patterns that wrap LLMs for production*
-
 - Semantic caching to cut API costs by 90%
 - Context window management (sliding window, summarization)
 - Structured output validation and guardrails
@@ -92,13 +88,7 @@ This repository contains the **open-source core** of TENTROPY.
 - Complete platform architecture (Next.js 15 + App Router)
 - Challenge execution engine (E2B sandboxed environments)
 - Monaco editor integration with syntax highlighting
-- User progress tracking and certificate system
 - **2 sample challenges per track** to understand the format
-
-### What's Not Included
-
-- Full challenge library (protected content)
-- Production challenge database seeds
 
 > **Want the full experience?** Visit [tentropy.co](https://tentropy.co) for all challenges.
 
@@ -115,7 +105,6 @@ This repository contains the **open-source core** of TENTROPY.
 | **Sandbox** | [E2B](https://e2b.dev/) (Isolated code execution) |
 | **Editor** | Monaco Editor (VS Code engine) |
 | **Styling** | Tailwind CSS + Lucide Icons |
-| **Analytics** | PostHog |
 
 ---
 
