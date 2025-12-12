@@ -37,10 +37,10 @@ export default function NavBar() {
     // Smooth scroll handler for navigation links
     const handleSmoothScroll = (e: React.MouseEvent, targetId: string) => {
         e.preventDefault();
-        
+
         if (pathname !== '/') {
-            // Use window.location to avoid Next.js loading indicator
-            window.location.href = `/#${targetId}`;
+            // Navigate to home first, then scroll (handled by the page)
+            router.push(`/#${targetId}`);
         } else {
             document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
@@ -100,7 +100,7 @@ export default function NavBar() {
                     ) : (
                         <div className="flex items-center gap-4">
                             <Link
-                                href={`/login?next=${encodeURIComponent(pathname)}`}
+                                href={`/signin?next=${encodeURIComponent(pathname)}`}
                                 className="text-sm font-bold text-gray-400 hover:text-white transition-colors"
                             >
                                 Sign In

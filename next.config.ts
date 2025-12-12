@@ -21,6 +21,15 @@ const nextConfig: NextConfig = {
       bodySizeLimit: '2mb',
     },
   },
+  webpack: (config, { isServer }) => {
+    // Exclude tentropy-sandbox directory from the build
+    // This is a separate utility folder for E2B template building
+    config.watchOptions = {
+      ...config.watchOptions,
+      ignored: ['**/node_modules', '**/tentropy-sandbox/**'],
+    };
+    return config;
+  },
 };
 
 export default nextConfig;

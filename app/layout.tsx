@@ -10,25 +10,40 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://tentropy.co'),
-  title: "TENTROPY | AI System Design",
-  description: "Experience AI engineering by repairing broken pipelines. Build, break, and fix systems in a realistic simulated environment. Practice system design, LLM optimization, RAG, and latency reduction.",
+  title: "TENTROPY | AI Systems Engineering",
+  description: "Learn AI infrastructure through CTF-style challenges. Fix rate limiting, semantic caching, context windows, and LLM guardrails in isolated micro-VMs.",
   keywords: ["AI engineering", "LLM optimization", "system design", "RAG", "APIs", "coding simulation", "machine learning", "devops", "sre", "build break fix"],
   icons: {
-    icon: '/icon.jpg',
-    apple: '/icon.jpg',
+    icon: [
+      { url: '/favicon.ico', sizes: '48x48' },
+      { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icon-512.png', sizes: '512x512', type: 'image/png' },
+    ],
+    apple: '/apple-touch-icon.png',
+    shortcut: '/favicon.ico',
   },
+  manifest: '/manifest.json',
   openGraph: {
-    title: "TENTROPY | Build, Break, Fix: AI System Design",
-    description: "Experience AI engineering by repairing broken pipelines. Build, break, and fix systems in a realistic simulated environment.",
+    title: "TENTROPY | AI Systems Engineering",
+    description: "Learn AI infrastructure through CTF-style challenges. Fix rate limiting, semantic caching, and LLM guardrails.",
     url: 'https://tentropy.co',
     siteName: 'TENTROPY',
     locale: 'en_US',
     type: 'website',
+    images: [
+      {
+        url: '/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'TENTROPY - AI Systems Engineering',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: "TENTROPY",
-    description: "Stabilize the Chaos. AI system engineering, API challenges, and System Design 101.",
+    description: "Learn AI infrastructure through CTF-style challenges.",
+    images: ['/og-image.jpg'],
   },
 };
 

@@ -29,7 +29,6 @@ import EditorPanel from './challenge/EditorPanel';
 import ConsolePanel from './challenge/ConsolePanel';
 
 import { Challenge } from '@/types/challenge';
-import { trackEvent } from '@/lib/analytics';
 import { createClient } from '@/utils/supabase/client';
 import { useAuth } from '@/utils/auth';
 import { logout } from '@/app/auth/actions';
@@ -39,6 +38,10 @@ import { useAllProgress } from '@/hooks/useAllProgress';
 import { getChallengeStatus } from '@/lib/challengeStatus';
 import { tracks } from '@/data/challenges';
 import { logger } from '@/lib/logger';
+
+
+const ONBOARDING_COMPLETE_KEY = 'tentropy_onboarding_complete';
+const INTRO_CHALLENGE_ID = 'ai-cost-cache-002';
 
 import { useChallengeRunner } from '@/hooks/useChallengeRunner';
 import { useChallengeState } from '@/hooks/useChallengeState';
@@ -96,6 +99,10 @@ export default function ChallengeInterface({ challenge }: ChallengeInterfaceProp
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
     const [pendingSaveAttempt, setPendingSaveAttempt] = useState<Attempt | null>(null);
     const [isSaved, setIsSaved] = useState(false);
+
+    // Guest onboarding state
+    const [isIntroChallenge, setIsIntroChallenge] = useState(false);
+    const [showOnboardingBanner, setShowOnboardingBanner] = useState(false);
 
     const successCountRef = useRef<number>(0);
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -208,6 +215,15 @@ export default function ChallengeInterface({ challenge }: ChallengeInterfaceProp
         return () => window.removeEventListener('resize', checkMobile);
     }, []);
 
+    // Detect if this is the intro challenge for onboarding
+    useEffect(() => {
+        const isIntro = challenge.id === INTRO_CHALLENGE_ID;
+        const hasCompletedOnboarding = localStorage.getItem(ONBOARDING_COMPLETE_KEY);
+        setIsIntroChallenge(isIntro);
+        // Show onboarding banner only for intro challenge, unauthenticated users, and first-time guests
+        setShowOnboardingBanner(isIntro && !isAuthenticated && !hasCompletedOnboarding);
+    }, [challenge.id, isAuthenticated]);
+
     const handleSuccess = async (executionTime: number) => {
         successCountRef.current += 1;
         if (successCountRef.current === 1 || successCountRef.current % 20 === 0) {
@@ -215,6 +231,12 @@ export default function ChallengeInterface({ challenge }: ChallengeInterfaceProp
         }
 
         setIsDebriefLocked(false);
+
+        // Mark onboarding complete for intro challenge
+        if (challenge.id === INTRO_CHALLENGE_ID) {
+            localStorage.setItem(ONBOARDING_COMPLETE_KEY, 'true');
+            setShowOnboardingBanner(false);
+        }
 
         await updateProgress({
             status: 'solved',
@@ -333,11 +355,16 @@ export default function ChallengeInterface({ challenge }: ChallengeInterfaceProp
             if (code) {
                 updateTabContent(code);
                 setHasRevealedSolution(true);
-                trackEvent('solution_revealed', { challenge_id: challenge.id });
                 posthog?.capture('solution_revealed', { challenge_id: challenge.id });
 
                 setIsDebriefLocked(false);
                 setActiveLeftTab('DEBRIEF');
+
+                // Mark onboarding complete for intro challenge
+                if (challenge.id === INTRO_CHALLENGE_ID) {
+                    localStorage.setItem(ONBOARDING_COMPLETE_KEY, 'true');
+                    setShowOnboardingBanner(false);
+                }
 
                 if (scrollContainerRef.current) {
                     scrollContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
@@ -719,7 +746,7 @@ export default function ChallengeInterface({ challenge }: ChallengeInterfaceProp
 
                                             <div className="p-2">
                                                 <Link
-                                                    href="/login"
+                                                    href="/signin"
                                                     className="flex items-center justify-center gap-2 w-full py-2 bg-white text-black text-xs font-bold rounded hover:bg-gray-200 transition-colors"
                                                 >
                                                     Sign In to Unlock
@@ -734,6 +761,21 @@ export default function ChallengeInterface({ challenge }: ChallengeInterfaceProp
                 </div>
             </div>
 
+            {/* Guest Onboarding Banner - Below Navbar */}
+            {showOnboardingBanner && (
+                <div className="bg-hazard-amber/10 px-4 py-2 flex items-center justify-center shrink-0 z-10 relative">
+                    <span className="text-hazard-amber font-mono text-sm font-bold tracking-wide">
+                        Read Problem → Edit the Code → Test the Fix
+                    </span>
+                    <button
+                        onClick={() => setShowOnboardingBanner(false)}
+                        className="absolute right-3 text-hazard-amber/60 hover:text-hazard-amber transition-colors p-1"
+                        aria-label="Dismiss banner"
+                    >
+                        <X className="w-4 h-4" />
+                    </button>
+                </div>
+            )}
             <div className="flex-1 flex overflow-hidden relative z-10">
                 <div className="absolute inset-0 pointer-events-none z-0 opacity-10" style={{
                     backgroundImage: 'linear-gradient(to right, #27272A 1px, transparent 1px), linear-gradient(to bottom, #27272A 1px, transparent 1px)',

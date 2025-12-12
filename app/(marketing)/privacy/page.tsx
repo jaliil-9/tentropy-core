@@ -1,4 +1,10 @@
+import { Metadata } from 'next';
 import React from 'react';
+
+export const metadata: Metadata = {
+    title: 'Privacy Policy | TENTROPY',
+    description: 'Learn how TENTROPY handles your data and protects your privacy.',
+};
 
 export default function PrivacyPolicy() {
     return (
@@ -67,7 +73,7 @@ export default function PrivacyPolicy() {
             <section className="mb-8">
                 <h2>7. Contact Us</h2>
                 <p>
-                    If you have questions or comments about this policy, you may email us at <a href="mailto:jalilbouziane09@gmail.com">jalilbouziane09@gmail.com</a>.
+                    If you have questions or comments about this policy, you may email us at <a href="mailto:contact@tentropy.co">contact@tentropy.co</a>.
                 </p>
             </section>
         </div>

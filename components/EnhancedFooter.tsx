@@ -95,7 +95,7 @@ export default function EnhancedFooter() {
                                 </a>
                             </li>
                             <li>
-                                <a href="mailto:jalilbouziane09@gmail.com" className="text-sm text-gray-400 hover:text-hazard-amber transition-colors font-mono">
+                                <a href="mailto:contact@tentropy.co" className="text-sm text-gray-400 hover:text-hazard-amber transition-colors font-mono">
                                     Contact
                                 </a>
                             </li>

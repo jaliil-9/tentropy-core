@@ -1,4 +1,10 @@
+import { Metadata } from 'next';
 import React from 'react';
+
+export const metadata: Metadata = {
+    title: 'Terms of Service | TENTROPY',
+    description: 'Terms and conditions for using TENTROPY.',
+};
 
 export default function TermsOfService() {
     return (
@@ -63,7 +69,7 @@ export default function TermsOfService() {
             <section className="mb-8">
                 <h2>7. Contact Us</h2>
                 <p>
-                    In order to resolve a complaint regarding the Site or to receive further information regarding use of the Site, please contact us at <a href="mailto:jalilbouziane09@gmail.com">jalilbouziane09@gmail.com</a>.
+                    In order to resolve a complaint regarding the Site or to receive further information regarding use of the Site, please contact us at <a href="mailto:contact@tentropy.co">contact@tentropy.co</a>.
                 </p>
             </section>
         </div>

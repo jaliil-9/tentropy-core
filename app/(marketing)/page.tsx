@@ -5,8 +5,14 @@ import { useState, useEffect } from "react";
 import { Terminal, Activity, Award, ChevronRight } from "lucide-react";
 
 
+const ONBOARDING_COMPLETE_KEY = 'tentropy_onboarding_complete';
+const INTRO_CHALLENGE_ID = 'ai-cost-cache-002';
+
+
 export default function Home() {
   const [email, setEmail] = useState("");
+  const [isFirstTimeGuest, setIsFirstTimeGuest] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   // Handle hash navigation for smooth scrolling when coming from another page
   useEffect(() => {
@@ -20,6 +26,14 @@ export default function Home() {
         }
       }, 100);
     }
+  }, []);
+
+  // Detect first-time guest on mount
+  useEffect(() => {
+    setMounted(true);
+    const hasCompletedOnboarding = localStorage.getItem(ONBOARDING_COMPLETE_KEY);
+    // First-time guest if no onboarding completion flag
+    setIsFirstTimeGuest(!hasCompletedOnboarding);
   }, []);
 
   const handleNewsletterSubmit = (e: React.FormEvent) => {
@@ -74,7 +88,7 @@ export default function Home() {
       </div>
 
       {/* Hero Section */}
-      <main className="relative z-20 flex-1 flex flex-col justify-center items-center text-center px-4 py-20 pt-32">
+      <main className="relative z-20 flex-1 flex flex-col justify-center items-center text-center px-4 py-20 pt-24">
         <div className="max-w-4xl mx-auto space-y-6 md:space-y-8 mb-24">
           <h1 className="text-3xl md:text-6xl font-black tracking-tighter text-white leading-none">
             STABILIZE <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-400 to-gray-600">THE CHAOS.</span>
@@ -87,12 +101,12 @@ export default function Home() {
 
           <div className="pt-4 md:pt-8 flex flex-col md:flex-row gap-4 items-center justify-center">
             <Link
-              href="/challenges"
+              href={mounted && isFirstTimeGuest ? `/challenge/${INTRO_CHALLENGE_ID}` : "/challenges"}
               className="group relative inline-flex items-center justify-center px-6 py-3 md:px-8 md:py-4 font-mono font-bold text-white transition-all duration-200 bg-transparent border-2 border-hazard-amber hover:bg-hazard-amber/10 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-hazard-amber focus:ring-offset-deep-anthracite text-sm md:text-base"
             >
               <span className="absolute inset-0 w-full h-full -mt-1 rounded-lg opacity-30 bg-gradient-to-b from-transparent via-transparent to-gray-700"></span>
               <span className="relative flex items-center gap-3 text-hazard-amber group-hover:text-white transition-colors text-glow">
-                [ INITIALIZE ]
+                {mounted && isFirstTimeGuest ? "[ CAN YOU FIX THIS? ]" : "[ INITIALIZE ]"}
               </span>
             </Link>
 

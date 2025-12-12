@@ -7,7 +7,7 @@ export default function ConditionalFooter() {
     const pathname = usePathname();
 
     // Hide footer on challenge pages and auth pages
-    const hideFooter = pathname?.startsWith('/challenge/') || pathname === '/login' || pathname === '/signup';
+    const hideFooter = pathname?.startsWith('/challenge/') || pathname === '/signin' || pathname === '/signup';
 
     if (hideFooter) return null;
 

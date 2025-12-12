@@ -169,9 +169,11 @@ export async function POST(req: Request) {
                     await sandbox.files.write('solution.py', code);
                     await sandbox.files.write('test_main.py', challenge.testCode);
 
-                    // 3. Install Dependencies (Restored)
-                    controller.enqueue(encoder.encode("Installing dependencies...\n"));
-                    await sandbox.commands.run('pip install pytest requests');
+                    // 3. Install Dependencies (only if using base template - custom template has them pre-installed)
+                    if (!process.env.E2B_TEMPLATE_ID) {
+                        controller.enqueue(encoder.encode("Installing dependencies...\n"));
+                        await sandbox.commands.run('pip install pytest requests');
+                    }
 
                     // 4. Run Tests
                     controller.enqueue(encoder.encode("Running tests...\n\n"));

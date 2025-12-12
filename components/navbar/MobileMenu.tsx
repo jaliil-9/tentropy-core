@@ -123,7 +123,7 @@ export default function MobileMenu({
                     ) : (
                         <div className="flex flex-col gap-4">
                             <Link
-                                href={`/login?next=${encodeURIComponent(pathname)}`}
+                                href={`/signin?next=${encodeURIComponent(pathname)}`}
                                 className="w-full py-3 text-center border border-tungsten-grey rounded text-gray-300 hover:text-white hover:border-white transition-colors"
                             >
                                 Sign In

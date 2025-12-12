@@ -1,7 +1,11 @@
-'use client';
-
+import { Metadata } from 'next';
 import React from 'react';
 import { BookOpen, Cpu, Layers, HelpCircle, Code, Shield, Zap, Clock } from 'lucide-react';
+
+export const metadata: Metadata = {
+    title: 'Documentation | TENTROPY - AI System Design Challenges',
+    description: 'Learn how TENTROPY challenges work: fix broken AI pipelines in isolated micro-VMs, master semantic caching, context windows, and LLM infrastructure. Open source on GitHub.',
+};
 
 export default function DocsPage() {
     return (

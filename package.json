@@ -10,7 +10,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "e2b:build:dev": "cd tentropy-sandbox && npx tsx build.dev.ts",
+    "e2b:build:prod": "cd tentropy-sandbox && npx tsx build.prod.ts"
   },
   "dependencies": {
     "@e2b/code-interpreter": "^1.0.2",
@@ -23,10 +25,10 @@
     "canvas-confetti": "^1.9.3",
     "clsx": "^2.1.1",
     "lucide-react": "^0.446.0",
-    "next": "^15.1.0",
+    "next": "15.1.0",
     "posthog-js": "^1.161.0",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1",
     "react-hot-toast": "^2.4.1",
     "react-markdown": "^9.0.1",
     "react-resizable-panels": "^2.1.3",

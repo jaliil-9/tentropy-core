@@ -127,7 +127,6 @@ export default function EditorPanel({
                             title="Cancel Execution"
                         >
                             <Square className="w-4 h-4 fill-current" />
-                            <span className="hidden md:inline">CANCEL</span>
                         </button>
                     )}
 
@@ -173,7 +172,6 @@ export default function EditorPanel({
                             title="Save Solution"
                         >
                             <Save className="w-4 h-4" />
-                            <span className="hidden md:inline">SAVE</span>
                         </button>
                     )}
 

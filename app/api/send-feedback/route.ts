@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
 
         // Email configuration
         const RESEND_API_KEY = process.env.RESEND_API_KEY;
-        const TO_EMAIL = 'jalilbouziane09@gmail.com';
+        const TO_EMAIL = 'contact@tentropy.co';
 
         // If Resend API key is configured, send email
         if (RESEND_API_KEY) {

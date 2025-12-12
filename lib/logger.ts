@@ -5,10 +5,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 class Logger {
     private log(level: LogLevel, message: string, ...args: any[]) {
         if (isProduction && level === 'debug') return;
-        // In production, we might want to suppress 'info' as well, or send to a service like Sentry/PostHog
-        // For now, we'll just suppress 'debug' and keep others, but maybe strip colors if we had them.
 
-        // We can also add a feature flag to enable logs in prod via localStorage or query param
         const forceEnable = typeof window !== 'undefined' && window.localStorage.getItem('debug') === 'true';
 
         if (isProduction && !forceEnable && (level === 'info' || level === 'debug')) {
