@@ -3,7 +3,7 @@ import Editor, { Monaco } from '@monaco-editor/react';
 import type { editor } from 'monaco-editor';
 import { FileCode, Plus, X, Loader2, Play, Eye, Save, Lock, Square } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import SyncIndicator from '@/components/SyncIndicator';
+import SyncIndicator from '@/components/shared/SyncIndicator';
 import { Tab } from '@/hooks/useChallengeState';
 import { Challenge } from '@/types/challenge';
 
@@ -160,7 +160,6 @@ export default function EditorPanel({
                             title={isSaved ? "Unsave Challenge" : "Save Challenge"}
                         >
                             <Save className={cn("w-4 h-4", isSaved && "fill-current")} />
-                            <span className="hidden md:inline">{isSaved ? 'SAVED' : 'SAVE'}</span>
                         </button>
                     )}
 

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import PageLoadingBar from "@/components/PageLoadingBar";
+import PageLoadingBar from "@/components/layout/PageLoadingBar";
 
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-mono",
@@ -52,10 +52,10 @@ import { PostHogProvider } from "@/app/providers/PostHogProvider";
 import PostHogPageView from "@/app/providers/PostHogPageView";
 import { Suspense } from "react";
 import PostHogIdentifier from "@/app/providers/PostHogIdentifier";
-import SaveProgressBanner from "@/components/SaveProgressBanner";
+import SaveProgressBanner from "@/components/shared/SaveProgressBanner";
 
-import ConditionalFooter from "@/components/ConditionalFooter";
-import CookieConsent from "@/components/CookieConsent";
+
+import CookieConsent from "@/components/shared/CookieConsent";
 
 export default function RootLayout({
   children,
@@ -77,7 +77,7 @@ export default function RootLayout({
             <div className="min-h-screen">
               {children}
             </div>
-            <ConditionalFooter />
+
             <SaveProgressBanner />
             <CookieConsent />
           </AuthProvider>

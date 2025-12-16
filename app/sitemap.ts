@@ -2,30 +2,65 @@ import { MetadataRoute } from 'next';
 import { challenges } from '@/data/challenges';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-
     const baseUrl = 'https://tentropy.co';
 
     // Static pages
-    const staticPages = [
+    const staticPages: MetadataRoute.Sitemap = [
         {
             url: baseUrl,
             lastModified: new Date(),
-            changeFrequency: 'monthly' as const,
+            changeFrequency: 'monthly',
             priority: 1,
         },
         {
             url: `${baseUrl}/challenges`,
             lastModified: new Date(),
-            changeFrequency: 'weekly' as const,
+            changeFrequency: 'weekly',
             priority: 0.9,
+        },
+        {
+            url: `${baseUrl}/docs`,
+            lastModified: new Date(),
+            changeFrequency: 'monthly',
+            priority: 0.7,
+        },
+        {
+            url: `${baseUrl}/contact`,
+            lastModified: new Date(),
+            changeFrequency: 'yearly',
+            priority: 0.5,
+        },
+        {
+            url: `${baseUrl}/privacy`,
+            lastModified: new Date(),
+            changeFrequency: 'yearly',
+            priority: 0.3,
+        },
+        {
+            url: `${baseUrl}/terms`,
+            lastModified: new Date(),
+            changeFrequency: 'yearly',
+            priority: 0.3,
+        },
+        {
+            url: `${baseUrl}/signin`,
+            lastModified: new Date(),
+            changeFrequency: 'yearly',
+            priority: 0.4,
+        },
+        {
+            url: `${baseUrl}/signup`,
+            lastModified: new Date(),
+            changeFrequency: 'yearly',
+            priority: 0.4,
         },
     ];
 
     // Dynamic challenge pages
-    const challengePages = challenges.map((challenge) => ({
+    const challengePages: MetadataRoute.Sitemap = challenges.map((challenge) => ({
         url: `${baseUrl}/challenge/${challenge.id}`,
         lastModified: new Date(),
-        changeFrequency: 'monthly' as const,
+        changeFrequency: 'monthly',
         priority: 0.8,
     }));
 

@@ -10,18 +10,18 @@ const redis = process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_RE
     ? Redis.fromEnv()
     : null;
 
-// Rate limiter for anonymous users (IP-based): 5 requests per 30 minutes
+// Rate limiter for anonymous users (IP-based): 5 requests per 20 minutes
 const anonymousRatelimit = redis ? new Ratelimit({
     redis,
-    limiter: Ratelimit.slidingWindow(5, "30 m"),
+    limiter: Ratelimit.slidingWindow(5, "20 m"),
     analytics: true,
     prefix: "ratelimit:anon",
 }) : null;
 
-// Rate limiter for authenticated users (user ID-based): 5 requests per 30 minutes
+// Rate limiter for authenticated users (user ID-based): 5 requests per 20 minutes
 const authenticatedRatelimit = redis ? new Ratelimit({
     redis,
-    limiter: Ratelimit.slidingWindow(5, "30 m"),
+    limiter: Ratelimit.slidingWindow(5, "20 m"),
     analytics: true,
     prefix: "ratelimit:auth",
 }) : null;
@@ -75,7 +75,7 @@ export async function POST(req: Request) {
                     await redis.del(`idem:${idempotencyKey}`);
                 }
 
-                const message = `Rate limit exceeded. You have ${limit} runs every 30 minutes.`;
+                const message = `Rate limit exceeded. You have ${limit} runs every 20 minutes.`;
 
                 return new Response(JSON.stringify({ error: message }), {
                     status: 429,
@@ -95,7 +95,7 @@ export async function POST(req: Request) {
             }
 
             const now = Date.now();
-            const window = 30 * 60 * 1000; // 30m
+            const window = 20 * 60 * 1000; // 20m
             const limit = 5;
 
             let record = globalStore.localRateLimit.get(rateLimitKey);

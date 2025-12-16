@@ -1,35 +1,11 @@
-import { Challenge } from '@/types/challenge';
-import { challenges } from '@/data/challenges';
-
-/**
- * TEMPORARY: Fetching directly from local data/ folder
- * TODO: Re-enable Supabase once database is synced
- * 
- * Original implementation is preserved below as comments.
- */
-
-/**
- * Get all challenges from local data
- */
-export async function getChallenges(): Promise<Challenge[]> {
-    return challenges;
-}
-
-/**
- * Get a single challenge by ID from local data
- */
-export async function getChallengeById(id: string): Promise<Challenge | null> {
-    return challenges.find(c => c.id === id) || null;
-}
-
-/* ============================================================================
- * ORIGINAL SUPABASE IMPLEMENTATION - Restore when database is synced
- * ============================================================================
-
 import { createClient } from '@/utils/supabase/server';
 import { Challenge } from '@/types/challenge';
+import { challenges as localChallenges } from '@/data/challenges';
 import { logger } from '@/lib/logger';
 
+/**
+ * Get all challenges from Supabase with local fallback
+ */
 export async function getChallenges(): Promise<Challenge[]> {
     try {
         const supabase = await createClient();
@@ -40,14 +16,12 @@ export async function getChallenges(): Promise<Challenge[]> {
 
         if (error) {
             logger.error('[getChallenges] Error fetching from Supabase:', error);
-            const { challenges } = await import('@/data/challenges');
-            return challenges;
+            return localChallenges;
         }
 
         if (!data || data.length === 0) {
             logger.warn('[getChallenges] No challenges found in database, using fallback');
-            const { challenges } = await import('@/data/challenges');
-            return challenges;
+            return localChallenges;
         }
 
         return data.map(row => ({
@@ -64,11 +38,13 @@ export async function getChallenges(): Promise<Challenge[]> {
         }));
     } catch (error) {
         logger.error('[getChallenges] Exception:', error);
-        const { challenges } = await import('@/data/challenges');
-        return challenges;
+        return localChallenges;
     }
 }
 
+/**
+ * Get a single challenge by ID from Supabase with local fallback
+ */
 export async function getChallengeById(id: string): Promise<Challenge | null> {
     try {
         const supabase = await createClient();
@@ -80,14 +56,12 @@ export async function getChallengeById(id: string): Promise<Challenge | null> {
 
         if (error) {
             logger.error(`[getChallengeById] Error fetching challenge ${id}:`, error);
-            const { challenges } = await import('@/data/challenges');
-            return challenges.find(c => c.id === id) || null;
+            return localChallenges.find(c => c.id === id) || null;
         }
 
         if (!data) {
             logger.warn(`[getChallengeById] Challenge ${id} not found in database, using fallback`);
-            const { challenges } = await import('@/data/challenges');
-            return challenges.find(c => c.id === id) || null;
+            return localChallenges.find(c => c.id === id) || null;
         }
 
         return {
@@ -104,9 +78,6 @@ export async function getChallengeById(id: string): Promise<Challenge | null> {
         };
     } catch (error) {
         logger.error(`[getChallengeById] Exception for ${id}:`, error);
-        const { challenges } = await import('@/data/challenges');
-        return challenges.find(c => c.id === id) || null;
+        return localChallenges.find(c => c.id === id) || null;
     }
 }
-
-============================================================================ */

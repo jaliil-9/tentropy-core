@@ -4,7 +4,6 @@ import { usePostHog } from 'posthog-js/react';
 import { createClient } from '@/utils/supabase/client';
 import { logger } from '@/lib/logger';
 import { Challenge } from '@/types/challenge';
-import { Attempt } from '@/types/attempt'; // We might need to define this type centrally
 
 // Define types locally if not available globally yet
 export interface RateLimitState {

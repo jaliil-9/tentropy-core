@@ -1,5 +1,5 @@
-import ChallengeInterface from '@/components/ChallengeInterface';
-import LoadingChallenge from '@/components/LoadingChallenge';
+import ChallengeInterface from '@/components/modals/ChallengeInterface';
+import LoadingChallenge from '@/components/challenge/LoadingChallenge';
 import DatabaseErrorFallback from '@/components/DatabaseErrorFallback';
 import { tracks } from '@/data/challenges';
 import { getChallengeById } from '@/lib/challenges';
