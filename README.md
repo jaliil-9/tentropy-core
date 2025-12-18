@@ -150,7 +150,7 @@ NEXT_PUBLIC_POSTHOG_KEY=your_posthog_key
 ### Run Development Server
 
 ```bash
-bun dev
+bun run dev
 ```
 
 Visit [http://localhost:3000](http://localhost:3000) to start solving challenges.
@@ -243,7 +243,7 @@ Distributed under the **Apache 2.0 License**. See [LICENSE](LICENSE) for details
 
 ## Links
 
-- **Platform**: [tentropy.dev](https://tentropy.dev)
+- **Platform**: [tentropy.co](https://tentropy.co)
 - **Contact**: contact@tentropy.co
 - **X/Twitter**: [@jalilbzn_](https://x.com/jalilbzn_)
 
