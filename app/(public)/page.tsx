@@ -176,7 +176,7 @@ export default function Home() {
                       AI ARCHITECT
                     </h3>
                     <p className="text-sm text-gray-400 font-mono">
-                                            // 5 missions | EASY → HARD
+                                            // 10 missions | MEDIUM → HARD
                     </p>
                   </div>
                 </div>
@@ -185,29 +185,29 @@ export default function Home() {
 
               <div className="space-y-3 mb-8 flex-1">
                 <div className="flex items-center gap-3 text-sm">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <span className="text-gray-300 font-mono">The Wallet Burner</span>
+                  <span className="ml-auto text-[10px] font-bold px-2 py-1 rounded border text-hazard-amber border-hazard-amber/30 bg-hazard-amber/10 font-mono">MEDIUM</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm">
                   <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
-                  <span className="text-gray-400 font-mono">The Wallet Burner</span>
-                  <span className="ml-auto text-[10px] font-bold px-2 py-1 rounded border text-terminal-green border-terminal-green/30 bg-terminal-green/10 font-mono">EASY</span>
+                  <span className="text-gray-400 font-mono">The Context Squeeze</span>
+                  <span className="ml-auto text-[10px] font-bold px-2 py-1 rounded border text-hazard-amber border-hazard-amber/30 bg-hazard-amber/10 font-mono">MEDIUM</span>
                 </div>
                 <div className="flex items-center gap-3 text-sm">
                   <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
                   <span className="text-gray-400 font-mono">The Context Guillotine</span>
-                  <span className="ml-auto text-[10px] font-bold px-2 py-1 rounded border text-hazard-amber border-hazard-amber/30 bg-hazard-amber/10 font-mono">MEDIUM</span>
+                  <span className="ml-auto text-[10px] font-bold px-2 py-1 rounded border text-red-500 border-red-500/30 bg-red-500/10 font-mono">HARD</span>
                 </div>
                 <div className="flex items-center gap-3 text-sm">
                   <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
                   <span className="text-gray-400 font-mono">The Hallucination Trap</span>
-                  <span className="ml-auto text-[10px] font-bold px-2 py-1 rounded border text-hazard-amber border-hazard-amber/30 bg-hazard-amber/10 font-mono">MEDIUM</span>
+                  <span className="ml-auto text-[10px] font-bold px-2 py-1 rounded border text-red-500 border-red-500/30 bg-red-500/10 font-mono">HARD</span>
                 </div>
                 <div className="flex items-center gap-3 text-sm">
                   <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
                   <span className="text-gray-400 font-mono">The Hanging Stream</span>
                   <span className="ml-auto text-[10px] font-bold px-2 py-1 rounded border text-red-500 border-red-500/30 bg-red-500/10 font-mono">HARD</span>
-                </div>
-                <div className="flex items-center gap-3 text-sm">
-                  <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
-                  <span className="text-gray-400 font-mono">The Lost Chunk</span>
-                  <span className="ml-auto text-[10px] font-bold px-2 py-1 rounded border text-hazard-amber border-hazard-amber/30 bg-hazard-amber/10 font-mono">MEDIUM</span>
                 </div>
               </div>
 

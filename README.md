@@ -134,10 +134,10 @@ cp .env.example .env.local
 ### Environment Variables
 
 ```env
-# Required
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-E2B_API_KEY=your_e2b_api_key
+# Optional
+E2B_API_KEY=your_e2b_api_key (Recommended but optional to see the UI)
+NEXT_PUBLIC_SUPABASE_URL= (Optional, stubbed in core)
+NEXT_PUBLIC_SUPABASE_ANON_KEY= (Optional, stubbed in core)
 
 # Optional (for rate limiting)
 UPSTASH_REDIS_REST_URL=your_redis_url
@@ -150,7 +150,7 @@ NEXT_PUBLIC_POSTHOG_KEY=your_posthog_key
 ### Run Development Server
 
 ```bash
-npm run dev
+bun dev
 ```
 
 Visit [http://localhost:3000](http://localhost:3000) to start solving challenges.

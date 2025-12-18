@@ -1,83 +1,17 @@
-import { createClient } from '@/utils/supabase/server';
+// Open-core stub - local data only, no Supabase
 import { Challenge } from '@/types/challenge';
 import { challenges as localChallenges } from '@/data/challenges';
-import { logger } from '@/lib/logger';
 
 /**
- * Get all challenges from Supabase with local fallback
+ * Get all challenges from local data
  */
 export async function getChallenges(): Promise<Challenge[]> {
-    try {
-        const supabase = await createClient();
-        const { data, error } = await supabase
-            .from('challenges')
-            .select('*')
-            .order('created_at', { ascending: true });
-
-        if (error) {
-            logger.error('[getChallenges] Error fetching from Supabase:', error);
-            return localChallenges;
-        }
-
-        if (!data || data.length === 0) {
-            logger.warn('[getChallenges] No challenges found in database, using fallback');
-            return localChallenges;
-        }
-
-        return data.map(row => ({
-            id: row.id,
-            title: row.title,
-            difficulty: row.difficulty as 'Easy' | 'Medium' | 'Hard',
-            summary: row.summary,
-            description: row.description,
-            brokenCode: row.broken_code,
-            testCode: row.test_code,
-            successMessage: row.success_message,
-            solutionCode: row.solution_code,
-            debrief: row.debrief
-        }));
-    } catch (error) {
-        logger.error('[getChallenges] Exception:', error);
-        return localChallenges;
-    }
+    return localChallenges;
 }
 
 /**
- * Get a single challenge by ID from Supabase with local fallback
+ * Get a single challenge by ID from local data
  */
 export async function getChallengeById(id: string): Promise<Challenge | null> {
-    try {
-        const supabase = await createClient();
-        const { data, error } = await supabase
-            .from('challenges')
-            .select('*')
-            .eq('id', id)
-            .single();
-
-        if (error) {
-            logger.error(`[getChallengeById] Error fetching challenge ${id}:`, error);
-            return localChallenges.find(c => c.id === id) || null;
-        }
-
-        if (!data) {
-            logger.warn(`[getChallengeById] Challenge ${id} not found in database, using fallback`);
-            return localChallenges.find(c => c.id === id) || null;
-        }
-
-        return {
-            id: data.id,
-            title: data.title,
-            difficulty: data.difficulty as 'Easy' | 'Medium' | 'Hard',
-            summary: data.summary,
-            description: data.description,
-            brokenCode: data.broken_code,
-            testCode: data.test_code,
-            successMessage: data.success_message,
-            solutionCode: data.solution_code,
-            debrief: data.debrief
-        };
-    } catch (error) {
-        logger.error(`[getChallengeById] Exception for ${id}:`, error);
-        return localChallenges.find(c => c.id === id) || null;
-    }
+    return localChallenges.find(c => c.id === id) || null;
 }

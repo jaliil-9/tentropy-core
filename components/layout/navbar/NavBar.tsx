@@ -4,30 +4,11 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { useAuth } from '@/utils/auth';
-import ConfirmationModal from '@/components/modals/ConfirmationModal';
-import UserDropdown from './UserDropdown';
-import MobileMenu from './MobileMenu';
 
 export default function NavBar() {
-    const { isAuthenticated, user, logout, loading } = useAuth();
     const pathname = usePathname();
     const router = useRouter();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const [isSigningOut, setIsSigningOut] = useState(false);
-    const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
-
-    const confirmLogout = async () => {
-        setIsSigningOut(true);
-        await logout();
-        router.push('/');
-        setIsSigningOut(false);
-        setShowSignOutConfirm(false);
-    };
-
-    const handleLogoutClick = () => {
-        setShowSignOutConfirm(true);
-    };
 
     // Close mobile menu on route change
     useEffect(() => {
@@ -37,9 +18,7 @@ export default function NavBar() {
     // Smooth scroll handler for navigation links
     const handleSmoothScroll = (e: React.MouseEvent, targetId: string) => {
         e.preventDefault();
-
         if (pathname !== '/') {
-            // Navigate to home first, then scroll (handled by the page)
             router.push(`/#${targetId}`);
         } else {
             document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -64,10 +43,11 @@ export default function NavBar() {
                     <span className="font-bold tracking-tighter text-lg text-white group-hover:text-hazard-amber transition-colors">
                         TENTROPY
                     </span>
+                    <span className="text-xs text-gray-500 ml-2 hidden md:inline">(Open Core)</span>
                 </Link>
 
-                {/* Navigation Links - Always visible on desktop */}
-                <div className="hidden md:flex items-center gap-6 ml-auto mr-12">
+                {/* Navigation Links */}
+                <div className="hidden md:flex items-center gap-6 ml-auto mr-8">
                     <a
                         href="/#tracks"
                         onClick={(e) => handleSmoothScroll(e, 'tracks')}
@@ -82,60 +62,56 @@ export default function NavBar() {
                     >
                         About
                     </a>
-                    <Link href="/contact" className="text-gray-400 hover:text-white transition-colors duration-200 text-sm font-mono">
-                        Contact
+                    <Link href="/docs" className="text-gray-400 hover:text-white transition-colors duration-200 text-sm font-mono">
+                        Docs
                     </Link>
                 </div>
 
-                {/* Desktop Actions */}
+                {/* CTA */}
                 <div className="hidden md:flex items-center gap-4">
-                    {loading ? (
-                        <div className="w-8 h-8 rounded-full bg-carbon-grey animate-pulse" />
-                    ) : isAuthenticated && user ? (
-                        <UserDropdown
-                            user={user}
-                            onLogoutClick={handleLogoutClick}
-                            isSigningOut={isSigningOut}
-                        />
-                    ) : (
-                        <div className="flex items-center gap-4">
-                            <Link
-                                href={`/signin?next=${encodeURIComponent(pathname)}`}
-                                className="text-sm font-bold text-gray-400 hover:text-white transition-colors"
-                            >
-                                Sign In
-                            </Link>
-                            <Link
-                                href={`/signup?next=${encodeURIComponent(pathname)}`}
-                                className="px-4 py-2 bg-white text-black text-sm font-bold rounded hover:bg-gray-200 transition-colors"
-                            >
-                                Get Started
-                            </Link>
-                        </div>
-                    )}
+                    <a
+                        href="https://tentropy.co"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-4 py-2 bg-hazard-amber text-black text-sm font-bold rounded hover:bg-yellow-500 transition-colors"
+                    >
+                        Full Platform →
+                    </a>
                 </div>
 
-                {/* Mobile Menu */}
-                <MobileMenu
-                    isOpen={isMobileMenuOpen}
-                    onToggle={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                    user={user}
-                    isAuthenticated={isAuthenticated}
-                    loading={loading}
-                    onLogoutClick={handleLogoutClick}
-                />
+                {/* Mobile Menu Button */}
+                <button
+                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                    className="md:hidden p-2 text-gray-400 hover:text-white"
+                >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        {isMobileMenuOpen ? (
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        ) : (
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                        )}
+                    </svg>
+                </button>
             </div>
 
-            <ConfirmationModal
-                isOpen={showSignOutConfirm}
-                onClose={() => setShowSignOutConfirm(false)}
-                onConfirm={confirmLogout}
-                title="Confirm Sign Out"
-                description="Are you sure you want to sign out? Unsaved progress in the current session might be lost."
-                confirmText="Sign Out"
-                cancelText="Stay"
-                loading={isSigningOut}
-            />
+            {/* Mobile Menu */}
+            {isMobileMenuOpen && (
+                <div className="md:hidden bg-deep-anthracite border-t border-tungsten-grey">
+                    <div className="px-4 py-4 space-y-3">
+                        <Link href="/" className="block text-gray-400 hover:text-white py-2">Home</Link>
+                        <Link href="/challenges" className="block text-gray-400 hover:text-white py-2">Challenges</Link>
+                        <Link href="/docs" className="block text-gray-400 hover:text-white py-2">Docs</Link>
+                        <a
+                            href="https://tentropy.co"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block px-4 py-2 bg-hazard-amber text-black text-sm font-bold rounded text-center"
+                        >
+                            Full Platform →
+                        </a>
+                    </div>
+                </div>
+            )}
         </nav>
     );
 }

@@ -1,2 +1,8 @@
-[template]
+# e2b.toml - Template configuration
+name = "tentropy"
+
+# Use the Dockerfile in the same directory
 dockerfile = "e2b.Dockerfile"
+
+# Start command (optional, default is fine for Python)
+# start_cmd = "python"

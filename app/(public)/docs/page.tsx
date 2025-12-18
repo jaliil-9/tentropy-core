@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import React from 'react';
-import { BookOpen, Cpu, Layers, HelpCircle, Code, Shield, Zap, Clock } from 'lucide-react';
+import { BookOpen, Cpu, Layers, HelpCircle, Code, Shield, Zap, Clock, Eye, Wrench } from 'lucide-react';
 
 export const metadata: Metadata = {
     title: 'Documentation',
@@ -61,6 +61,90 @@ export default function DocsPage() {
                 </div>
             </section>
 
+            {/* Challenge Architecture (NEW) */}
+            <section className="mb-12">
+                <div className="flex items-center gap-3 mb-6">
+                    <div className="p-2 bg-hazard-amber/10 rounded-lg">
+                        <Wrench className="w-6 h-6 text-hazard-amber" />
+                    </div>
+                    <h2 className="text-2xl font-bold text-white">Challenge Architecture</h2>
+                </div>
+
+                <div className="space-y-4 text-gray-300">
+                    <p>
+                        Every challenge is built from <strong className="text-white">5 core components</strong> that work together to create
+                        a realistic debugging experience:
+                    </p>
+
+                    <div className="grid gap-4 my-6">
+                        <div className="bg-carbon-grey border border-tungsten-grey rounded-lg p-4">
+                            <div className="flex items-center gap-2 mb-2">
+                                <span className="text-hazard-amber font-mono font-bold">1. Briefing</span>
+                                <span className="text-gray-500 text-sm font-mono">(description)</span>
+                            </div>
+                            <p className="text-sm text-gray-400">
+                                The scenario that sets up the problem. Explains what system is broken, what incident occurred,
+                                and what you need to fix. Written in Markdown with production-realistic context.
+                            </p>
+                        </div>
+
+                        <div className="bg-carbon-grey border border-tungsten-grey rounded-lg p-4">
+                            <div className="flex items-center gap-2 mb-2">
+                                <span className="text-hazard-amber font-mono font-bold">2. Broken Code</span>
+                                <span className="text-gray-500 text-sm font-mono">(brokenCode)</span>
+                            </div>
+                            <p className="text-sm text-gray-400">
+                                Python code with an intentional bug. This is what you see in the editor — your job is to fix it.
+                                The bugs are based on real production issues.
+                            </p>
+                        </div>
+
+                        <div className="bg-carbon-grey border border-tungsten-grey rounded-lg p-4">
+                            <div className="flex items-center gap-2 mb-2">
+                                <span className="text-terminal-green font-mono font-bold">3. Test Code</span>
+                                <span className="text-gray-500 text-sm font-mono">(testCode)</span>
+                            </div>
+                            <p className="text-sm text-gray-400">
+                                A hidden pytest file that validates your fix. You never see this code — you only see the test output.
+                                The tests use assertions, mocks, and timeouts to verify correctness.
+                            </p>
+                        </div>
+
+                        <div className="bg-carbon-grey border border-tungsten-grey rounded-lg p-4">
+                            <div className="flex items-center gap-2 mb-2">
+                                <span className="text-hazard-amber font-mono font-bold">4. Solution</span>
+                                <span className="text-gray-500 text-sm font-mono">(solutionCode)</span>
+                            </div>
+                            <p className="text-sm text-gray-400">
+                                The correct implementation. Available if you choose to reveal it (counts as "giving up"),
+                                or automatically shown after you solve the challenge.
+                            </p>
+                        </div>
+
+                        <div className="bg-carbon-grey border border-tungsten-grey rounded-lg p-4">
+                            <div className="flex items-center gap-2 mb-2">
+                                <span className="text-hazard-amber font-mono font-bold">5. Debrief</span>
+                                <span className="text-gray-500 text-sm font-mono">(debrief)</span>
+                            </div>
+                            <p className="text-sm text-gray-400">
+                                Educational content that unlocks after completion. Explains the mechanics behind the bug,
+                                real-world impact, and production-grade best practices.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="bg-hazard-amber/5 border border-hazard-amber/20 rounded-lg p-4">
+                        <h4 className="text-white font-bold mb-2 text-sm">How Success is Determined</h4>
+                        <p className="text-sm text-gray-400">
+                            When you click <strong className="text-hazard-amber">DEPLOY PATCH</strong>, your code is saved as{' '}
+                            <code className="bg-tungsten-grey px-1 py-0.5 rounded text-xs">solution.py</code> in the sandbox.
+                            The test file imports your functions and runs assertions. If all tests pass (pytest exits with code 0),
+                            you succeed. If any assertion fails or the code times out, you'll see the error in the console.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
             {/* Tracks Overview */}
             <section className="mb-12">
                 <div className="flex items-center gap-3 mb-6">
@@ -76,6 +160,7 @@ export default function DocsPage() {
                         <div className="flex items-center gap-3 mb-3">
                             <Shield className="w-5 h-5 text-terminal-green" />
                             <h3 className="text-xl font-bold text-white">Systems Resilience</h3>
+                            <span className="ml-auto text-xs font-mono text-gray-500">5 challenges</span>
                         </div>
                         <p className="text-gray-400 mb-4">
                             Master the failure modes of high-throughput distributed systems. Debug the logic that crashes production.
@@ -94,6 +179,7 @@ export default function DocsPage() {
                         <div className="flex items-center gap-3 mb-3">
                             <Zap className="w-5 h-5 text-hazard-amber" />
                             <h3 className="text-xl font-bold text-white">The AI Architect</h3>
+                            <span className="ml-auto text-xs font-mono text-gray-500">10 challenges</span>
                         </div>
                         <p className="text-gray-400 mb-4">
                             Build the robust infrastructure that wraps LLMs. Master Semantic Caching, Context Windows, and Streaming stability.
@@ -104,6 +190,24 @@ export default function DocsPage() {
                             <span className="px-2 py-1 bg-tungsten-grey/50 text-gray-300 text-xs font-mono rounded">JSON Guardrails</span>
                             <span className="px-2 py-1 bg-tungsten-grey/50 text-gray-300 text-xs font-mono rounded">Stream Timeouts</span>
                             <span className="px-2 py-1 bg-tungsten-grey/50 text-gray-300 text-xs font-mono rounded">RAG Reranking</span>
+                            <span className="px-2 py-1 bg-tungsten-grey/50 text-gray-300 text-xs font-mono rounded">Agent Loops</span>
+                        </div>
+                    </div>
+
+                    {/* Track 3 - Observability */}
+                    <div className="bg-carbon-grey border border-tungsten-grey rounded-lg p-6">
+                        <div className="flex items-center gap-3 mb-3">
+                            <Eye className="w-5 h-5 text-blue-400" />
+                            <h3 className="text-xl font-bold text-white">Observability & Debugging</h3>
+                            <span className="ml-auto text-xs font-mono text-gray-500">3 challenges</span>
+                        </div>
+                        <p className="text-gray-400 mb-4">
+                            Learn the essential tools to debug distributed AI systems. Practice Tracing, Metrics, and Structured Logging.
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                            <span className="px-2 py-1 bg-tungsten-grey/50 text-gray-300 text-xs font-mono rounded">Distributed Tracing</span>
+                            <span className="px-2 py-1 bg-tungsten-grey/50 text-gray-300 text-xs font-mono rounded">Metric Alerting</span>
+                            <span className="px-2 py-1 bg-tungsten-grey/50 text-gray-300 text-xs font-mono rounded">Structured Logging</span>
                         </div>
                     </div>
                 </div>
@@ -238,3 +342,4 @@ export default function DocsPage() {
         </div>
     );
 }
+

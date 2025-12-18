@@ -3,7 +3,7 @@
     "node": ">=20.9.0",
     "npm": ">=10.0.0"
   },
-  "name": "mvp",
+  "name": "tentropy-core",
   "version": "0.1.0",
   "private": true,
   "scripts": {
