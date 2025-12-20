@@ -244,7 +244,7 @@ Distributed under the **Apache 2.0 License**. See [LICENSE](LICENSE) for details
 ## Links
 
 - **Platform**: [tentropy.co](https://tentropy.co)
-- **Contact**: contact@tentropy.co
+- **Contact**: jalilbouziane09@gmail.com
 - **X/Twitter**: [@jalilbzn_](https://x.com/jalilbzn_)
 
 ---
