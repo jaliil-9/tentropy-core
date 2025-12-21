@@ -6,9 +6,11 @@ interface SuccessModalProps {
     isOpen: boolean;
     onClose: () => void;
     challengeTitle: string;
-    trackTitle?: string;
-    unlockedCertId?: string | null;
-    unlockedTrackTitle?: string | null;
+    challengeId: string;
+    executionTime: number;
+    certificateId?: string | null;
+    trackTitle?: string | null;
+    nextChallengeId?: string | null;
 }
 
 export default function SuccessModal({

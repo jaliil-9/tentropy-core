@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     description: 'Learn AI infrastructure through CTF-style challenges. Fix rate limiting, semantic caching, context windows, and LLM guardrails in isolated micro-VMs.',
 };
 
-export default function MarketingLayout({
+export default function PublicLayout({
     children,
 }: Readonly<{
     children: React.ReactNode;

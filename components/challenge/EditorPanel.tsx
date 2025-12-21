@@ -1,71 +1,68 @@
+'use client';
+
 import React from 'react';
 import Editor, { Monaco } from '@monaco-editor/react';
 import type { editor } from 'monaco-editor';
 import { FileCode, Plus, X, Loader2, Play, Eye, Save, Lock, Square } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import SyncIndicator from '@/components/shared/SyncIndicator';
-import { Tab } from '@/hooks/useChallengeState';
+import { useChallenge } from '@/context/ChallengeContext';
 import { Challenge } from '@/types/challenge';
 
 interface EditorPanelProps {
     challenge: Challenge;
-    tabs: Tab[];
-    activeTabId: string;
-    setActiveTabId: (id: string) => void;
-    updateTabContent: (value: string | undefined) => void;
-    addNewTab: () => void;
-    closeTab: (e: React.MouseEvent, id: string) => void;
-    setEditorInstance: (editor: editor.IStandaloneCodeEditor) => void;
-    setMonacoInstance: (monaco: Monaco) => void;
-    submitSolution: () => void;
-    cancelSubmission: () => void;
-    isLoading: boolean;
-    revealSolution: () => void;
-    isAuthenticated: boolean;
-    isDebriefLocked: boolean;
-    toggleSaveChallenge: () => void;
-    isSaved: boolean;
-    hasRevealedSolution: boolean;
-    handleSaveSolution: () => void;
-    syncStatus: 'idle' | 'saving' | 'saved' | 'error' | 'offline';
-    isLocked: boolean;
-    isMobile: boolean;
-    activeTab: Tab;
-    posthog?: any;
     showPiiWarning?: boolean;
 }
 
-export default function EditorPanel({
-    challenge,
-    tabs,
-    activeTabId,
-    setActiveTabId,
-    updateTabContent,
-    addNewTab,
-    closeTab,
-    setEditorInstance,
-    setMonacoInstance,
-    submitSolution,
-    cancelSubmission,
-    isLoading,
-    revealSolution,
-    isAuthenticated,
-    isDebriefLocked,
-    toggleSaveChallenge,
-    isSaved,
-    hasRevealedSolution,
-    handleSaveSolution,
-    syncStatus,
-    isLocked,
-    isMobile,
-    activeTab,
-    posthog,
-    showPiiWarning
-}: EditorPanelProps) {
+/**
+ * Code editor panel with tabs, action buttons, and Monaco editor.
+ * Uses context to access all workspace state instead of props.
+ */
+export default function EditorPanel({ challenge, showPiiWarning = true }: EditorPanelProps) {
+    const {
+        // Tab management
+        tabs,
+        activeTabId,
+        activeTab,
+        setActiveTabId,
+        updateTabContent,
+        addNewTab,
+        closeTab,
+        setEditorInstance,
+        setMonacoInstance,
+
+        // Submission
+        handleSubmit,
+        runner,
+
+        // Solution reveal
+        revealSolutionHandler,
+        hasRevealedSolution,
+
+        // Auth & Save
+        isAuthenticated,
+        isDebriefLocked,
+        toggleSaveChallenge,
+        isSaved,
+        handleSaveSolution,
+        syncStatus,
+
+        // Lock & Display
+        isLocked,
+        isMobile,
+
+        // Analytics
+        posthog
+    } = useChallenge();
+
+    const isLoading = runner.isLoading;
+    const cancelSubmission = runner.cancelSubmission;
+
     return (
         <div className="h-full flex flex-col bg-deep-anthracite relative">
             {/* Editor Header */}
             <div className="h-10 border-b border-tungsten-grey bg-carbon-grey/50 flex items-center justify-between px-2 shrink-0 relative z-20">
+                {/* Tab Bar */}
                 <div className="flex items-center gap-1 h-full pt-1 overflow-x-auto scrollbar-none min-w-0 flex-1 mr-2">
                     {tabs.map(tab => (
                         <div
@@ -93,9 +90,11 @@ export default function EditorPanel({
                     </button>
                 </div>
 
+                {/* Action Buttons */}
                 <div className="flex items-center gap-2 ml-2">
+                    {/* Execute Button */}
                     <button
-                        onClick={submitSolution}
+                        onClick={handleSubmit}
                         disabled={isLoading || isLocked}
                         className={cn(
                             "flex items-center gap-2 px-3 md:px-4 py-1.5 text-xs font-bold tracking-wider transition-all border shrink-0",
@@ -130,9 +129,10 @@ export default function EditorPanel({
                         </button>
                     )}
 
+                    {/* Reveal Solution Button */}
                     {(challenge.solutionCode || challenge.hasSolution) && (
                         <button
-                            onClick={revealSolution}
+                            onClick={revealSolutionHandler}
                             disabled={isLocked}
                             className={cn(
                                 "flex items-center gap-2 px-3 md:px-4 py-1.5 text-xs font-bold tracking-wider transition-all border shrink-0",
@@ -187,7 +187,7 @@ export default function EditorPanel({
                     theme="vs-dark"
                     value={activeTab.content}
                     onChange={updateTabContent}
-                    onMount={(editor, monaco) => {
+                    onMount={(editor: editor.IStandaloneCodeEditor, monaco: Monaco) => {
                         setEditorInstance(editor);
                         setMonacoInstance(monaco);
                         monaco.editor.defineTheme('industrial-dark', {

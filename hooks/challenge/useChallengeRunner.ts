@@ -1,7 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { usePostHog } from 'posthog-js/react';
-import { createClient } from '@/utils/supabase/client';
 import { logger } from '@/lib/logger';
 import { Challenge } from '@/types/challenge';
 
@@ -20,7 +19,7 @@ export interface RunnerState {
     rateLimit: RateLimitState;
 }
 
-export function useChallengeRunner(challenge: Challenge, user: any) {
+export function useChallengeRunner(challenge: Challenge) {
     const [output, setOutput] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [sandboxID, setSandboxID] = useState<string | undefined>(undefined);
@@ -47,6 +46,7 @@ export function useChallengeRunner(challenge: Challenge, user: any) {
         fetchRateLimit();
     }, []);
 
+    // Helper function to strip ANSI escape codes from output
     const stripAnsi = (str: string) => str.replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1, 4}(?:;[0-9]{0, 4})*)?[0-9A-ORZcf-nqry=><]/g, '');
 
     const submitSolution = async (code: string, onSuccess?: (executionTime: number) => void, onFailure?: () => void) => {
@@ -177,7 +177,6 @@ export function useChallengeRunner(challenge: Challenge, user: any) {
                 setOutput(prev => prev + '\n\n⚠️ Execution cancelled by user.');
                 toast('EXECUTION CANCELLED', {
                     style: { background: '#F59E0B', color: '#fff', fontFamily: 'monospace' },
-                    icon: '⏹️',
                 });
                 posthog?.capture('code_submitted', { challenge_id: challenge.id, result: 'cancelled' });
             } else {

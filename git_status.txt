@@ -1,0 +1,56 @@
+﻿ M .env.example
+ M .gitignore
+ M README.md
+ M app/(public)/challenges/ChallengesRoadmap.tsx
+ M app/(public)/challenges/page.tsx
+ M app/(public)/docs/page.tsx
+ M app/(public)/layout.tsx
+ M app/(public)/privacy/page.tsx
+ M app/(public)/terms/page.tsx
+ M app/api/rate-limit-status/route.ts
+ M app/api/submit/route.ts
+ M app/challenge/[id]/page.tsx
+ M app/globals.css
+ M app/layout.tsx
+ M app/providers/PostHogIdentifier.tsx
+ M app/providers/PostHogPageView.tsx
+ M app/providers/PostHogProvider.tsx
+ M bun.lock
+ M components/challenge/ConsolePanel.tsx
+ M components/challenge/EditorPanel.tsx
+ M components/layout/navbar/NavBar.tsx
+ M components/layout/navbar/UserDropdown.tsx
+ M components/modals/AuthModal.tsx
+ D components/modals/ChallengeInterface.tsx
+ M components/modals/SuccessModal.tsx
+ M components/shared/SaveProgressBanner.tsx
+ M components/shared/StreakIndicator.tsx
+ M context/AuthContext.tsx
+ M e2b.toml
+ D hooks/useAllProgress.ts
+ D hooks/useAttemptHistory.ts
+ D hooks/useChallengeProgress.ts
+ D hooks/useChallengeRunner.ts
+ D hooks/useChallengeState.ts
+ D lib/challengeStatus.ts
+ D lib/challenges.ts
+ M lib/constants.ts
+ D lib/progress.ts
+ M lib/secrets.ts
+ M middleware.ts
+ M package.json
+ M tailwind.config.ts
+ M utils/auth.ts
+ M utils/supabase/client.ts
+ M utils/supabase/middleware.ts
+ M utils/supabase/server.ts
+?? app/providers/AuthSyncProvider.tsx
+?? components/challenge/ChallengeWorkspace.tsx
+?? components/challenge/DescriptionPanel.tsx
+?? components/challenge/WorkspaceHeader.tsx
+?? context/ChallengeContext.tsx
+?? git_diff.txt
+?? git_status.txt
+?? hooks/challenge/
+?? hooks/progress/
+?? services/

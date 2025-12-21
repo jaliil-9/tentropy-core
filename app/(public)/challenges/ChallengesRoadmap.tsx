@@ -6,8 +6,8 @@ import { usePostHog } from "posthog-js/react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import ChallengeNode from "@/components/challenge/ChallengeNode";
 import { Cpu, Server, ChevronDown, ChevronUp } from "lucide-react";
-import { useAllProgress } from "@/hooks/useAllProgress";
-import { getChallengeStatus } from "@/lib/challengeStatus";
+import { useAllProgress } from "@/hooks/progress/useAllProgress";
+import { getChallengeStatus } from "@/services/challengeStatus";
 import { useSearchParams } from "next/navigation";
 
 function ChallengesContent() {

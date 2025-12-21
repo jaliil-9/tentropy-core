@@ -60,7 +60,3 @@ body {
 .text-glow {
   text-shadow: 0 0 10px rgba(255, 176, 0, 0.5);
 }
-
-.border-glow {
-  box-shadow: 0 0 10px rgba(255, 176, 0, 0.2);
-}

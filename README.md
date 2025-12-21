@@ -150,7 +150,7 @@ NEXT_PUBLIC_POSTHOG_KEY=your_posthog_key
 ### Run Development Server
 
 ```bash
-bun dev
+bun run dev
 ```
 
 Visit [http://localhost:3000](http://localhost:3000) to start solving challenges.
@@ -163,17 +163,20 @@ Visit [http://localhost:3000](http://localhost:3000) to start solving challenges
 tentropy-core/
 ├── app/                    # Next.js App Router pages
 │   ├── api/               # API routes (submit, rate-limit)
-│   ├── challenge/         # Challenge interface pages
-│   ├── challenges/        # Challenge list/roadmap
-│   └── (marketing)/       # Landing, login, profile pages
-├── components/            # React components
-│   ├── challenge/         # Editor, Console panels
-│   └── ui/               # Shared UI components
-├── data/
-│   └── challenges/       # Challenge definitions (sample)
-├── hooks/                # React hooks (runner, progress)
-├── lib/                  # Utilities (Supabase, analytics)
-└── types/                # TypeScript types
+│   ├── challenge/         # Challenge workspace interface
+│   ├── challenges/        # Challenge catalog/roadmap
+│   ├── providers/         # Global context providers
+│   └── (public)/          # Public landing, docs, and legal pages
+├── components/            # Reusable UI & domain components
+│   ├── challenge/         # Workspace specialized panels
+│   ├── layout/            # Navigation, Footer, Loading bars
+│   └── shared/            # Common UI elements
+├── context/               # React Context for global state
+├── data/                  # Static challenge definitions
+├── hooks/                 # Custom React hooks (domain-grouped)
+├── services/              # Business logic & data orchestration
+├── utils/                 # Pure utility & helper functions
+└── types/                 # TypeScript interface definitions
 ```
 
 ---
@@ -243,8 +246,8 @@ Distributed under the **Apache 2.0 License**. See [LICENSE](LICENSE) for details
 
 ## Links
 
-- **Platform**: [tentropy.dev](https://tentropy.dev)
-- **Contact**: contact@tentropy.co
+- **Platform**: [tentropy.co](https://tentropy.co)
+- **Contact**: jalilbouziane09@gmail.com
 - **X/Twitter**: [@jalilbzn_](https://x.com/jalilbzn_)
 
 ---

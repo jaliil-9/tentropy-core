@@ -2,8 +2,8 @@ import { Metadata } from 'next';
 import React from 'react';
 
 export const metadata: Metadata = {
-    title: 'Privacy Policy',
-    description: 'Learn how TENTROPY handles your data and protects your privacy.',
+    title: 'Privacy Policy | TENTROPY',
+    description: 'Our commitment to protecting your data.',
 };
 
 export default function PrivacyPolicy() {

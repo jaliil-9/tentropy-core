@@ -3,8 +3,8 @@ import React from 'react';
 import { BookOpen, Cpu, Layers, HelpCircle, Code, Shield, Zap, Clock, Eye, Wrench } from 'lucide-react';
 
 export const metadata: Metadata = {
-    title: 'Documentation',
-    description: 'Learn how TENTROPY challenges work: fix broken AI pipelines in isolated micro-VMs, master semantic caching, context windows, and LLM infrastructure.',
+    title: 'Documentation | TENTROPY',
+    description: 'Learn how the platform works, from challenge architecture to technical stack.',
 };
 
 export default function DocsPage() {

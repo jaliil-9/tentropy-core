@@ -1,5 +1,5 @@
 import { Sandbox } from '@e2b/code-interpreter';
-import { getChallengeById } from '@/lib/challenges';
+import { getChallengeById } from '@/services/challenges';
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 import { logger } from '@/lib/logger';
@@ -10,18 +10,18 @@ const redis = process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_RE
     ? Redis.fromEnv()
     : null;
 
-// Rate limiter for anonymous users (IP-based): 5 requests per 20 minutes
+// Rate limiter for anonymous users (IP-based): 10 requests per 30 minutes
 const anonymousRatelimit = redis ? new Ratelimit({
     redis,
-    limiter: Ratelimit.slidingWindow(5, "20 m"),
+    limiter: Ratelimit.slidingWindow(10, "30 m"),
     analytics: true,
     prefix: "ratelimit:anon",
 }) : null;
 
-// Rate limiter for authenticated users (user ID-based): 5 requests per 20 minutes
+// Rate limiter for authenticated users (user ID-based): 10 requests per 30 minutes
 const authenticatedRatelimit = redis ? new Ratelimit({
     redis,
-    limiter: Ratelimit.slidingWindow(5, "20 m"),
+    limiter: Ratelimit.slidingWindow(10, "30 m"),
     analytics: true,
     prefix: "ratelimit:auth",
 }) : null;
@@ -61,7 +61,7 @@ export async function POST(req: Request) {
         // Use composite key: userId for auth users, IP for anonymous
         const rateLimitKey = user ? `user:${user.id}` : `ip:${ip}`;
         const limiter = user ? authenticatedRatelimit : anonymousRatelimit;
-        const limitValue = 5; // Same limit for both auth and anon
+        const limitValue = 10; // Same limit for both auth and anon
 
         let rateLimitInfo = { limit: limitValue, remaining: limitValue, reset: 0 };
 
@@ -75,7 +75,7 @@ export async function POST(req: Request) {
                     await redis.del(`idem:${idempotencyKey}`);
                 }
 
-                const message = `Rate limit exceeded. You have ${limit} runs every 20 minutes.`;
+                const message = `Rate limit exceeded. You have ${limit} credits every 30 minutes.`;
 
                 return new Response(JSON.stringify({ error: message }), {
                     status: 429,
@@ -95,8 +95,8 @@ export async function POST(req: Request) {
             }
 
             const now = Date.now();
-            const window = 20 * 60 * 1000; // 20m
-            const limit = 5;
+            const window = 30 * 60 * 1000; // 30m
+            const limit = 10;
 
             let record = globalStore.localRateLimit.get(rateLimitKey);
             if (!record || now > record.reset) {

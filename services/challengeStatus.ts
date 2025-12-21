@@ -39,9 +39,7 @@ export function getChallengeStatus(
     return 'locked';
 }
 
-/**
- * Get all unlocked challenge IDs in a track
- */
+// Get all unlocked challenge IDs in a track
 export function getUnlockedChallenges(
     allProgress: Map<string, ChallengeProgress>,
     trackChallengeIds: string[]

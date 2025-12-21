@@ -2,8 +2,8 @@ import { Metadata } from 'next';
 import React from 'react';
 
 export const metadata: Metadata = {
-    title: 'Terms of Service',
-    description: 'Terms and conditions for using TENTROPY.',
+    title: 'Terms of Service | TENTROPY',
+    description: 'The rules of engagement for the TENTROPY platform.',
 };
 
 export default function TermsOfService() {

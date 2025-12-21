@@ -1,20 +1,19 @@
+'use client';
+
 import React, { useRef, useEffect } from 'react';
 import { Terminal } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import RateLimitIndicator from '@/components/shared/RateLimitIndicator';
-import { RateLimitState } from '@/hooks/useChallengeRunner';
+import { useChallenge } from '@/context/ChallengeContext';
 
-interface ConsolePanelProps {
-    output: string;
-    status: 'idle' | 'running' | 'success' | 'failure' | 'cancelled';
-    rateLimit: RateLimitState;
-}
+/**
+ * Console panel showing execution output and status.
+ * Uses context to access runner state.
+ */
+export default function ConsolePanel() {
+    const { runner } = useChallenge();
+    const { output, status, rateLimit } = runner;
 
-export default function ConsolePanel({
-    output,
-    status,
-    rateLimit
-}: ConsolePanelProps) {
     const terminalRef = useRef<HTMLDivElement>(null);
 
     // Auto-scroll terminal

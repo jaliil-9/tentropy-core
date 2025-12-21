@@ -29,18 +29,9 @@ const config: Config = {
                         transform: 'translate(-50%, -40%) scale(1)',
                     },
                 },
-                'pulse-slow': {
-                    '0%, 100%': {
-                        opacity: '1',
-                    },
-                    '50%': {
-                        opacity: '.5',
-                    },
-                },
             },
             animation: {
                 spotlight: 'spotlight 2s ease .75s 1 forwards',
-                'pulse-slow': 'pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
             },
         },
     },

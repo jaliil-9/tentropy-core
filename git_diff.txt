@@ -1,0 +1,2652 @@
+﻿diff --git a/.gitignore b/.gitignore
+index 00480c1e..0b08e837 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,7 +1,14 @@
++# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
++
+ # dependencies
+ /node_modules
+ /.pnp
+-.pnp.js
++.pnp.*
++.yarn/*
++!.yarn/patches
++!.yarn/plugins
++!.yarn/releases
++!.yarn/versions
+ 
+ # testing
+ /coverage
+@@ -20,14 +27,12 @@
+ # debug
+ npm-debug.log*
+ yarn-debug.log*
+-ts-debug.log*
++yarn-error.log*
++.pnpm-debug.log*
+ 
+-# local env files
+-.env*.local
+-.env
+-.env.production
+-.env.development
+-.env.test
++# env files (can opt-in for committing if needed)
++.env*
++!.env.example
+ 
+ # vercel
+ .vercel
+@@ -35,3 +40,15 @@ ts-debug.log*
+ # typescript
+ *.tsbuildinfo
+ next-env.d.ts
++
++# Linting temp files
++.temp/
++.ruff_cache/
++
++# Python
++__pycache__/
++*.pyc
++*.pyo
++
++# Logs
++*.log
+\ No newline at end of file
+diff --git a/README.md b/README.md
+index 36652699..867ead64 100644
+--- a/README.md
++++ b/README.md
+@@ -1,254 +1,79 @@
+-# TENTROPY
++# TENTROPY - Open Core
+ 
+-**CTF-Style Challenges for AI Systems Engineering**
++> Learn AI Infrastructure Through CTF-Style Challenges
+ 
+-> *The skills that make AI systems production-ready aren't taught in ML courses.*  
+-> *TENTROPY teaches through real-world failure scenarios.*
++This is the **open-source core** of TENTROPY, a platform for learning AI systems engineering through hands-on, break-fix challenges.
+ 
+-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+-[![Next.js](https://img.shields.io/badge/Next.js-15-black)](https://nextjs.org/)
+-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
+-
+----
+-
+-## What is TENTROPY?
+-
+-TENTROPY is a **CTF learning platform** for AI/ML engineers who want to master the **infrastructure and reliability patterns** that make LLM applications production-ready.
+-
+-Most AI education focuses on model training. TENTROPY focuses on what happens after the engineering that determines whether your AI system survives contact with real users.
+-
+-### The Problem We Solve
+-
+-| What ML Courses Teach | What Production AI Needs |
+-|-----------------------|--------------------------|
+-| Fine-tuning models | Context window management |
+-| Prompt engineering | Rate limiting & caching |
+-| Dataset curation | Hallucination guardrails |
+-| Evaluation metrics | Streaming & timeout handling |
+-
+-
+-**TENTROPY bridges this gap** through hands-on challenges inspired by real production incidents.
+-
+----
+-
+-## How It Works
+-
+-```
+-ÔöîÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÉ
+-Ôöé  BRIEFING: "Your chatbot is crashing with context_length_exceeded"   Ôöé
+-Ôö£ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöñ
+-Ôöé                                                                      Ôöé
+-Ôöé  ÔöîÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÉ    ÔöîÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÉ  Ôöé
+-Ôöé  Ôöé    BROKEN CODE          Ôöé    Ôöé         CONSOLE                 Ôöé  Ôöé
+-Ôöé  Ôöé    (Monaco Editor)      Ôöé -> Ôöé    pytest output + system logs  Ôöé  Ôöé
+-Ôöé  Ôöé                         Ôöé    Ôöé                                 Ôöé  Ôöé
+-Ôöé  ÔööÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÿ    ÔööÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÿ  Ôöé
+-Ôöé                                                                      Ôöé
+-Ôö£ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöñ
+-Ôöé  DEBRIEF: Production patterns + code samples (unlocks on solve)     Ôöé
+-ÔööÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÿ
+-```
+-
+-1. **Read the Incident**: Each challenge presents a realistic failure scenario
+-2. **Fix the Code**: Debug and patch the broken Python in an embedded editor
+-3. **Run Tests**: Code executes in an isolated sandbox with instant feedback
+-4. **Learn the Pattern**: Unlock debriefs with production-grade solutions
+-
+----
+-
+-## Learning Tracks
+-
+-### Systems Resilience
+-- ReDoS attacks and catastrophic backtracking
+-- Rate limiting with Token Bucket algorithms
+-- Retry storms and exponential backoff with jitter
+-- Connection pooling and resource management
+-- N+1 query detection and batch optimization
+-
+-### The AI Architect  
+-- Semantic caching to cut API costs by 90%
+-- Context window management (sliding window, summarization)
+-- Structured output validation and guardrails
+-- Streaming responses to prevent gateway timeouts
+-- RAG pipeline optimization with re-ranking
+-
+-### Observability & Debugging
+-- Distributed tracing to find the root cause of a failure in a microservice chain.
+-- Sliding window error rate calculation to trigger alerts.
+-- Structured JSON logging to make debugging queryable.
+-  
+----
+-
+-## Open Source Core
+-
+-This repository contains the **open-source core** of TENTROPY.
+-
+-### What's Included
+-
+-- Complete platform architecture (Next.js 15 + App Router)
+-- Challenge execution engine (E2B sandboxed environments)
+-- Monaco editor integration with syntax highlighting
+-- **2 sample challenges per track** to understand the format
+-
+-> **Want the full experience?** Visit [tentropy.co](https://tentropy.co) for all challenges.
+-
+----
+-
+-## Tech Stack
+-
+-| Layer | Technology |
+-|-------|------------|
+-| **Framework** | [Next.js 15](https://nextjs.org/) (App Router) |
+-| **Language** | TypeScript 5 |
+-| **Database** | [Supabase](https://supabase.com/) (PostgreSQL + Auth) |
+-| **KV Store** | [Upstash Redis](https://upstash.com/) (Rate limiting) |
+-| **Sandbox** | [E2B](https://e2b.dev/) (Isolated code execution) |
+-| **Editor** | Monaco Editor (VS Code engine) |
+-| **Styling** | Tailwind CSS + Lucide Icons |
+-
+----
+-
+-## Quick Start
+-
+-### Prerequisites
+-
+-- Node.js 18+
+-- Bun
+-- E2B API key ([get one free](https://e2b.dev/))
+-- Upstash Redis (optional, for rate limiting)
+-
+-### Installation
++## ­ƒÜÇ Quick Start
+ 
+ ```bash
+-# Clone the repository
+-git clone https://github.com/jaliil-9/tentropy-core.git
+-cd tentropy-core
+-
+ # Install dependencies
+-bun install
++npm install
+ 
+ # Set up environment variables
+ cp .env.example .env.local
+-```
+-
+-### Environment Variables
+-
+-```env
+-# Optional
+-E2B_API_KEY=your_e2b_api_key (Recommended but optional to see the UI)
+-NEXT_PUBLIC_SUPABASE_URL= (Optional, stubbed in core)
+-NEXT_PUBLIC_SUPABASE_ANON_KEY= (Optional, stubbed in core)
+-
+-# Optional (for rate limiting)
+-UPSTASH_REDIS_REST_URL=your_redis_url
+-UPSTASH_REDIS_REST_TOKEN=your_redis_token
++# Add your E2B_API_KEY (get one at https://e2b.dev)
+ 
+-# Optional (for analytics)
+-NEXT_PUBLIC_POSTHOG_KEY=your_posthog_key
++# Run the development server
++npm run dev
+ ```
+ 
+-### Run Development Server
+-
+-```bash
+-bun dev
+-```
++Open [http://localhost:3000](http://localhost:3000) to start solving challenges.
+ 
+-Visit [http://localhost:3000](http://localhost:3000) to start solving challenges.
++## ÔÜí What's Included
+ 
+----
++- **6 Challenges** from 3 tracks
++- **E2B Sandbox Integration** for safe code execution
++- **Local Progress Tracking** via localStorage
++- **Full Challenge Interface** with Monaco editor
+ 
+-## Project Structure
++## ­ƒöÆ What's NOT Included (Full Platform Only)
+ 
+-```
+-tentropy-core/
+-Ôö£ÔöÇÔöÇ app/                    # Next.js App Router pages
+-Ôöé   Ôö£ÔöÇÔöÇ api/               # API routes (submit, rate-limit)
+-Ôöé   Ôö£ÔöÇÔöÇ challenge/         # Challenge interface pages
+-Ôöé   Ôö£ÔöÇÔöÇ challenges/        # Challenge list/roadmap
+-Ôöé   ÔööÔöÇÔöÇ (marketing)/       # Landing, login, profile pages
+-Ôö£ÔöÇÔöÇ components/            # React components
+-Ôöé   Ôö£ÔöÇÔöÇ challenge/         # Editor, Console panels
+-Ôöé   ÔööÔöÇÔöÇ ui/               # Shared UI components
+-Ôö£ÔöÇÔöÇ data/
+-Ôöé   ÔööÔöÇÔöÇ challenges/       # Challenge definitions (sample)
+-Ôö£ÔöÇÔöÇ hooks/                # React hooks (runner, progress)
+-Ôö£ÔöÇÔöÇ lib/                  # Utilities (Supabase, analytics)
+-ÔööÔöÇÔöÇ types/                # TypeScript types
+-```
++The full experience at [tentropy.co](https://tentropy.co) includes:
++- All challenges (19+ total)
++- User authentication
++- Cloud progress sync
++- Certificates & badges
++- Leaderboards
++- Community features
+ 
+----
++## ­ƒôü Project Structure
+ 
+-## Creating a Challenge
+-
+-Challenges follow a consistent structure:
+-
+-```typescript
+-{
+-  id: 'unique-challenge-id',
+-  title: 'The Challenge Title',
+-  difficulty: 'Easy' | 'Medium' | 'Hard',
+-  summary: 'One-line description for the card.',
+-  
+-  description: `
+-    # The Scenario (what broke)
+-    # The Problem (why it matters)
+-    # The Goal (what to fix)
+-  `,
+-  
+-  brokenCode: `# Python code with the bug`,
+-  testCode: `# pytest code that verifies the fix`,
+-  solutionCode: `# The correct implementation`,
+-  successMessage: 'Displayed on solve',
+-  
+-  debrief: `
+-    # Production patterns
+-    # Code examples
+-    # Warning callouts
+-  `
+-}
++```
++Ôö£ÔöÇÔöÇ app/                 # Next.js 15 App Router
++Ôöé   Ôö£ÔöÇÔöÇ (public)/        # Public pages (home, docs)
++Ôöé   Ôö£ÔöÇÔöÇ challenge/       # Challenge interface
++Ôöé   ÔööÔöÇÔöÇ api/             # API routes
++Ôö£ÔöÇÔöÇ components/          # React components
++Ôö£ÔöÇÔöÇ data/                # Challenge definitions
++Ôö£ÔöÇÔöÇ hooks/               # React hooks
++Ôö£ÔöÇÔöÇ lib/                 # Utilities
++ÔööÔöÇÔöÇ types/               # TypeScript types
+ ```
+ 
+-See `data/challenges/systems.ts` for full examples.
+-
+----
+-
+-## Contributing
+-
+-We welcome contributions! Whether it's:
+-
+-- Bug fixes
+-- Documentation improvements
+-- New features
+-- Challenge submissions
+-
+-### Getting Started
+-
+-1. Fork the repository
+-2. Create a feature branch: `git checkout -b feature/amazing-feature`
+-3. Make your changes
+-4. Run tests: `bun run test`
+-5. Commit: `git commit -m 'Add amazing feature'`
+-6. Push: `git push origin feature/amazing-feature`
+-7. Open a Pull Request
++## ­ƒøá Tech Stack
+ 
+-See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
++- **Framework**: Next.js 15 (App Router)
++- **Styling**: Tailwind CSS
++- **Editor**: Monaco Editor
++- **Sandbox**: E2B Code Interpreter
++- **Language**: TypeScript
+ 
+----
++## ­ƒôû Documentation
+ 
+-## License
++See [/docs](http://localhost:3000/docs) for detailed documentation on:
++- Challenge system architecture
++- E2B sandbox setup
++- Contributing guidelines
+ 
+-Distributed under the **Apache 2.0 License**. See [LICENSE](LICENSE) for details.
++## ­ƒñØ Contributing
+ 
+----
++Contributions are welcome! Please read our contributing guidelines before submitting PRs.
+ 
+-## Links
++## ­ƒôä License
+ 
+-- **Platform**: [tentropy.dev](https://tentropy.dev)
+-- **Contact**: contact@tentropy.co
+-- **X/Twitter**: [@jalilbzn_](https://x.com/jalilbzn_)
++This project is licensed under the terms specified in the LICENSE file.
+ 
+ ---
+ 
+-<p align="center">
+-  <strong>Built for engineers who ship AI to production.</strong>
+-</p>
++**Want the full experience?** Visit [tentropy.co](https://tentropy.co) for authentication, progress tracking, certificates, and all challenges.
+diff --git a/app/(public)/challenges/ChallengesRoadmap.tsx b/app/(public)/challenges/ChallengesRoadmap.tsx
+index fd487a0c..d25859ad 100644
+--- a/app/(public)/challenges/ChallengesRoadmap.tsx
++++ b/app/(public)/challenges/ChallengesRoadmap.tsx
+@@ -6,8 +6,8 @@ import { usePostHog } from "posthog-js/react";
+ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
+ import ChallengeNode from "@/components/challenge/ChallengeNode";
+ import { Cpu, Server, ChevronDown, ChevronUp } from "lucide-react";
+-import { useAllProgress } from "@/hooks/useAllProgress";
+-import { getChallengeStatus } from "@/lib/challengeStatus";
++import { useAllProgress } from "@/hooks/progress/useAllProgress";
++import { getChallengeStatus } from "@/services/challengeStatus";
+ import { useSearchParams } from "next/navigation";
+ 
+ function ChallengesContent() {
+diff --git a/app/(public)/challenges/page.tsx b/app/(public)/challenges/page.tsx
+index a526a22d..4398171a 100644
+--- a/app/(public)/challenges/page.tsx
++++ b/app/(public)/challenges/page.tsx
+@@ -2,8 +2,8 @@ import { Metadata } from 'next';
+ import ChallengesRoadmap from './ChallengesRoadmap';
+ 
+ export const metadata: Metadata = {
+-    title: 'Challenges',
+-    description: 'Browse AI engineering challenges. Master system resilience, caching, context windows, and LLM infrastructure.',
++    title: 'Challenges | TENTROPY',
++    description: 'Browse our collection of system resilience challenges. Test your skills against realistic scenarios.',
+ };
+ 
+ export default function ChallengesPage() {
+diff --git a/app/(public)/docs/page.tsx b/app/(public)/docs/page.tsx
+index 68d263a4..07b7a47b 100644
+--- a/app/(public)/docs/page.tsx
++++ b/app/(public)/docs/page.tsx
+@@ -3,8 +3,8 @@ import React from 'react';
+ import { BookOpen, Cpu, Layers, HelpCircle, Code, Shield, Zap, Clock, Eye, Wrench } from 'lucide-react';
+ 
+ export const metadata: Metadata = {
+-    title: 'Documentation',
+-    description: 'Learn how TENTROPY challenges work: fix broken AI pipelines in isolated micro-VMs, master semantic caching, context windows, and LLM infrastructure.',
++    title: 'Documentation | TENTROPY',
++    description: 'Learn how the platform works, from challenge architecture to technical stack.',
+ };
+ 
+ export default function DocsPage() {
+diff --git a/app/(public)/layout.tsx b/app/(public)/layout.tsx
+index 0a96fd2d..42d11224 100644
+--- a/app/(public)/layout.tsx
++++ b/app/(public)/layout.tsx
+@@ -7,7 +7,7 @@ export const metadata: Metadata = {
+     description: 'Learn AI infrastructure through CTF-style challenges. Fix rate limiting, semantic caching, context windows, and LLM guardrails in isolated micro-VMs.',
+ };
+ 
+-export default function MarketingLayout({
++export default function PublicLayout({
+     children,
+ }: Readonly<{
+     children: React.ReactNode;
+diff --git a/app/(public)/privacy/page.tsx b/app/(public)/privacy/page.tsx
+index c441d483..ade5d4c2 100644
+--- a/app/(public)/privacy/page.tsx
++++ b/app/(public)/privacy/page.tsx
+@@ -2,8 +2,8 @@ import { Metadata } from 'next';
+ import React from 'react';
+ 
+ export const metadata: Metadata = {
+-    title: 'Privacy Policy',
+-    description: 'Learn how TENTROPY handles your data and protects your privacy.',
++    title: 'Privacy Policy | TENTROPY',
++    description: 'Our commitment to protecting your data.',
+ };
+ 
+ export default function PrivacyPolicy() {
+diff --git a/app/(public)/terms/page.tsx b/app/(public)/terms/page.tsx
+index 69726434..f6bbf37d 100644
+--- a/app/(public)/terms/page.tsx
++++ b/app/(public)/terms/page.tsx
+@@ -2,8 +2,8 @@ import { Metadata } from 'next';
+ import React from 'react';
+ 
+ export const metadata: Metadata = {
+-    title: 'Terms of Service',
+-    description: 'Terms and conditions for using TENTROPY.',
++    title: 'Terms of Service | TENTROPY',
++    description: 'The rules of engagement for the TENTROPY platform.',
+ };
+ 
+ export default function TermsOfService() {
+diff --git a/app/api/rate-limit-status/route.ts b/app/api/rate-limit-status/route.ts
+index 74665586..3e24c08d 100644
+--- a/app/api/rate-limit-status/route.ts
++++ b/app/api/rate-limit-status/route.ts
+@@ -7,18 +7,18 @@ const redis = process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_RE
+     ? Redis.fromEnv()
+     : null;
+ 
+-// Rate limiter for anonymous users (IP-based): 5 requests per 20 minutes
++// Rate limiter for anonymous users (IP-based): 10 requests per 30 minutes
+ const anonymousRatelimit = redis ? new Ratelimit({
+     redis,
+-    limiter: Ratelimit.slidingWindow(5, "20 m"),
++    limiter: Ratelimit.slidingWindow(10, "30 m"),
+     analytics: true,
+     prefix: "ratelimit:anon",
+ }) : null;
+ 
+-// Rate limiter for authenticated users (user ID-based): 5 requests per 20 minutes
++// Rate limiter for authenticated users (user ID-based): 10 requests per 30 minutes
+ const authenticatedRatelimit = redis ? new Ratelimit({
+     redis,
+-    limiter: Ratelimit.slidingWindow(5, "20 m"),
++    limiter: Ratelimit.slidingWindow(10, "30 m"),
+     analytics: true,
+     prefix: "ratelimit:auth",
+ }) : null;
+@@ -33,25 +33,27 @@ export async function GET(req: Request) {
+     const rateLimitKey = user ? `user:${user.id}` : `ip:${ip}`;
+     const limiter = user ? authenticatedRatelimit : anonymousRatelimit;
+ 
+-    let rateLimitInfo = { limit: 5, remaining: 5, reset: 0 };
++    let rateLimitInfo = { limit: 10, remaining: 10, reset: 0 };
+ 
+     if (limiter) {
+         // Use getRemaining to check without incrementing
+         // getRemaining() returns Promise<number> - just the remaining count, not an object
+         try {
+             // Type assertion needed because TypeScript types may be incomplete
+-            const remaining = (await (limiter as any).getRemaining(rateLimitKey)) as number;
+-            
+-            // getRemaining() doesn't provide reset time, so we estimate based on window duration
+-            // Since it's a 20-minute sliding window, return reset as 20 minutes from now
+-            // This is an approximation - actual reset time depends on when first request in window was made
+-            const windowMs = 20 * 60 * 1000; // 20 minutes
+-            const reset = Date.now() + windowMs;
+-            
++            // Some versions of the custom limiter might return an object { remaining, reset }
++            const remainingResult = await (limiter as any).getRemaining(rateLimitKey);
++            const remaining = typeof remainingResult === 'object' ? remainingResult.remaining : remainingResult;
++
++            // getRemaining() doesn't always provide reset time, so we estimate based on window duration
++            const windowMs = 30 * 60 * 1000; // 30 minutes
++            const reset = typeof remainingResult === 'object' && remainingResult.reset
++                ? remainingResult.reset
++                : Date.now() + windowMs;
++
+             rateLimitInfo = {
+-                limit: 5,
+-                remaining: remaining,
+-                reset: reset
++                limit: 10,
++                remaining: typeof remaining === 'number' ? remaining : 10,
++                reset: typeof reset === 'number' ? reset : Date.now() + windowMs
+             };
+         } catch (error) {
+             console.error('Rate limit check error:', error);
+@@ -65,8 +67,8 @@ export async function GET(req: Request) {
+         }
+ 
+         const now = Date.now();
+-        const window = 20 * 60 * 1000; // 20 min (match production)
+-        const limit = 5;
++        const window = 30 * 60 * 1000; // 30 min (match production)
++        const limit = 10;
+ 
+         let record = globalStore.localRateLimit.get(rateLimitKey);
+         if (!record || now > record.reset) {
+diff --git a/app/api/submit/route.ts b/app/api/submit/route.ts
+index 38db8495..21f98029 100644
+--- a/app/api/submit/route.ts
++++ b/app/api/submit/route.ts
+@@ -1,5 +1,5 @@
+ import { Sandbox } from '@e2b/code-interpreter';
+-import { getChallengeById } from '@/lib/challenges';
++import { getChallengeById } from '@/services/challenges';
+ import { Ratelimit } from '@upstash/ratelimit';
+ import { Redis } from '@upstash/redis';
+ import { logger } from '@/lib/logger';
+@@ -10,18 +10,18 @@ const redis = process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_RE
+     ? Redis.fromEnv()
+     : null;
+ 
+-// Rate limiter for anonymous users (IP-based): 5 requests per 20 minutes
++// Rate limiter for anonymous users (IP-based): 10 requests per 30 minutes
+ const anonymousRatelimit = redis ? new Ratelimit({
+     redis,
+-    limiter: Ratelimit.slidingWindow(5, "20 m"),
++    limiter: Ratelimit.slidingWindow(10, "30 m"),
+     analytics: true,
+     prefix: "ratelimit:anon",
+ }) : null;
+ 
+-// Rate limiter for authenticated users (user ID-based): 5 requests per 20 minutes
++// Rate limiter for authenticated users (user ID-based): 10 requests per 30 minutes
+ const authenticatedRatelimit = redis ? new Ratelimit({
+     redis,
+-    limiter: Ratelimit.slidingWindow(5, "20 m"),
++    limiter: Ratelimit.slidingWindow(10, "30 m"),
+     analytics: true,
+     prefix: "ratelimit:auth",
+ }) : null;
+@@ -61,7 +61,7 @@ export async function POST(req: Request) {
+         // Use composite key: userId for auth users, IP for anonymous
+         const rateLimitKey = user ? `user:${user.id}` : `ip:${ip}`;
+         const limiter = user ? authenticatedRatelimit : anonymousRatelimit;
+-        const limitValue = 5; // Same limit for both auth and anon
++        const limitValue = 10; // Same limit for both auth and anon
+ 
+         let rateLimitInfo = { limit: limitValue, remaining: limitValue, reset: 0 };
+ 
+@@ -75,7 +75,7 @@ export async function POST(req: Request) {
+                     await redis.del(`idem:${idempotencyKey}`);
+                 }
+ 
+-                const message = `Rate limit exceeded. You have ${limit} runs every 20 minutes.`;
++                const message = `Rate limit exceeded. You have ${limit} credits every 30 minutes.`;
+ 
+                 return new Response(JSON.stringify({ error: message }), {
+                     status: 429,
+@@ -95,8 +95,8 @@ export async function POST(req: Request) {
+             }
+ 
+             const now = Date.now();
+-            const window = 20 * 60 * 1000; // 20m
+-            const limit = 5;
++            const window = 30 * 60 * 1000; // 30m
++            const limit = 10;
+ 
+             let record = globalStore.localRateLimit.get(rateLimitKey);
+             if (!record || now > record.reset) {
+diff --git a/app/challenge/[id]/page.tsx b/app/challenge/[id]/page.tsx
+index 3b5375d6..62a840e5 100644
+--- a/app/challenge/[id]/page.tsx
++++ b/app/challenge/[id]/page.tsx
+@@ -1,8 +1,8 @@
+-import ChallengeInterface from '@/components/modals/ChallengeInterface';
++import ChallengeWorkspace from '@/components/challenge/ChallengeWorkspace';
+ import LoadingChallenge from '@/components/challenge/LoadingChallenge';
+ import DatabaseErrorFallback from '@/components/DatabaseErrorFallback';
+ import { tracks } from '@/data/challenges';
+-import { getChallengeById } from '@/lib/challenges';
++import { getChallengeById } from '@/services/challenges';
+ import { notFound } from 'next/navigation';
+ import type { Metadata } from 'next';
+ import { Suspense } from 'react';
+@@ -92,7 +92,7 @@ export default async function ChallengePage({ params }: PageProps) {
+                 dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+             />
+             <Suspense fallback={<LoadingChallenge />}>
+-                <ChallengeInterface challenge={sanitizedChallenge} />
++                <ChallengeWorkspace challenge={sanitizedChallenge} />
+             </Suspense>
+         </main>
+     );
+diff --git a/app/globals.css b/app/globals.css
+index e50fa5f3..78700945 100644
+--- a/app/globals.css
++++ b/app/globals.css
+@@ -59,8 +59,4 @@ body {
+ 
+ .text-glow {
+   text-shadow: 0 0 10px rgba(255, 176, 0, 0.5);
+-}
+-
+-.border-glow {
+-  box-shadow: 0 0 10px rgba(255, 176, 0, 0.2);
+ }
+\ No newline at end of file
+diff --git a/app/layout.tsx b/app/layout.tsx
+index 14453052..e79e9c97 100644
+--- a/app/layout.tsx
++++ b/app/layout.tsx
+@@ -4,6 +4,7 @@ import "./globals.css";
+ import PageLoadingBar from "@/components/layout/PageLoadingBar";
+ import { AuthProvider } from "@/context/AuthContext";
+ import CookieConsent from "@/components/shared/CookieConsent";
++import { ErrorBoundary } from "@/components/ErrorBoundary";
+ 
+ const jetbrainsMono = JetBrains_Mono({
+     variable: "--font-mono",
+@@ -37,7 +38,9 @@ export default function RootLayout({
+                 <AuthProvider>
+                     <PageLoadingBar />
+                     <div className="min-h-screen">
+-                        {children}
++                        <ErrorBoundary>
++                            {children}
++                        </ErrorBoundary>
+                     </div>
+                     <CookieConsent />
+                 </AuthProvider>
+diff --git a/bun.lock b/bun.lock
+index e2c145d4..f60c98cf 100644
+--- a/bun.lock
++++ b/bun.lock
+@@ -15,7 +15,7 @@
+         "canvas-confetti": "^1.9.3",
+         "clsx": "^2.1.1",
+         "lucide-react": "^0.446.0",
+-        "next": "15.1.0",
++        "next": "15.1.11",
+         "posthog-js": "^1.161.0",
+         "react": "^19.2.1",
+         "react-dom": "^19.2.1",
+@@ -32,7 +32,7 @@
+         "@types/react-dom": "^19",
+         "autoprefixer": "^10.4.20",
+         "eslint": "^9.39.2",
+-        "eslint-config-next": "15.1.0",
++        "eslint-config-next": "15.1.11",
+         "monaco-editor": "^0.55.1",
+         "postcss": "^8",
+         "tailwindcss": "^3.4.1",
+@@ -135,25 +135,25 @@
+ 
+     "@napi-rs/wasm-runtime": ["@napi-rs/wasm-runtime@0.2.12", "", { "dependencies": { "@emnapi/core": "^1.4.3", "@emnapi/runtime": "^1.4.3", "@tybys/wasm-util": "^0.10.0" } }, "sha512-ZVWUcfwY4E/yPitQJl481FjFo3K22D6qF0DuFH6Y/nbnE11GY5uguDxZMGXPQ8WQ0128MXQD7TnfHyK4oWoIJQ=="],
+ 
+-    "@next/env": ["@next/env@15.1.0", "", {}, "sha512-UcCO481cROsqJuszPPXJnb7GGuLq617ve4xuAyyNG4VSSocJNtMU5Fsx+Lp6mlN8c7W58aZLc5y6D/2xNmaK+w=="],
++    "@next/env": ["@next/env@15.1.11", "", {}, "sha512-yp++FVldfLglEG5LoS2rXhGypPyoSOyY0kxZQJ2vnlYJeP8o318t5DrDu5Tqzr03qAhDWllAID/kOCsXNLcwKw=="],
+ 
+-    "@next/eslint-plugin-next": ["@next/eslint-plugin-next@15.1.0", "", { "dependencies": { "fast-glob": "3.3.1" } }, "sha512-+jPT0h+nelBT6HC9ZCHGc7DgGVy04cv4shYdAe6tKlEbjQUtwU3LzQhzbDHQyY2m6g39m6B0kOFVuLGBrxxbGg=="],
++    "@next/eslint-plugin-next": ["@next/eslint-plugin-next@15.1.11", "", { "dependencies": { "fast-glob": "3.3.1" } }, "sha512-jpAu+46v5FF/TO8YUdOBHn/Wr4SCiU4IgjQ45S9Nn3vR4nZVS2SR+m9lpxcCv/xqMUoYuYFQZUP0H/ptw0W6+w=="],
+ 
+-    "@next/swc-darwin-arm64": ["@next/swc-darwin-arm64@15.1.0", "", { "os": "darwin", "cpu": "arm64" }, "sha512-ZU8d7xxpX14uIaFC3nsr4L++5ZS/AkWDm1PzPO6gD9xWhFkOj2hzSbSIxoncsnlJXB1CbLOfGVN4Zk9tg83PUw=="],
++    "@next/swc-darwin-arm64": ["@next/swc-darwin-arm64@15.1.9", "", { "os": "darwin", "cpu": "arm64" }, "sha512-sQF6MfW4nk0PwMYYq8xNgqyxZJGIJV16QqNDgaZ5ze9YoVzm4/YNx17X0exZudayjL9PF0/5RGffDtzXapch0Q=="],
+ 
+-    "@next/swc-darwin-x64": ["@next/swc-darwin-x64@15.1.0", "", { "os": "darwin", "cpu": "x64" }, "sha512-DQ3RiUoW2XC9FcSM4ffpfndq1EsLV0fj0/UY33i7eklW5akPUCo6OX2qkcLXZ3jyPdo4sf2flwAED3AAq3Om2Q=="],
++    "@next/swc-darwin-x64": ["@next/swc-darwin-x64@15.1.9", "", { "os": "darwin", "cpu": "x64" }, "sha512-fp0c1rB6jZvdSDhprOur36xzQvqelAkNRXM/An92sKjjtaJxjlqJR8jiQLQImPsClIu8amQn+ZzFwl1lsEf62w=="],
+ 
+-    "@next/swc-linux-arm64-gnu": ["@next/swc-linux-arm64-gnu@15.1.0", "", { "os": "linux", "cpu": "arm64" }, "sha512-M+vhTovRS2F//LMx9KtxbkWk627l5Q7AqXWWWrfIzNIaUFiz2/NkOFkxCFyNyGACi5YbA8aekzCLtbDyfF/v5Q=="],
++    "@next/swc-linux-arm64-gnu": ["@next/swc-linux-arm64-gnu@15.1.9", "", { "os": "linux", "cpu": "arm64" }, "sha512-77rYykF6UtaXvxh9YyRIKoaYPI6/YX6cy8j1DL5/1XkjbfOwFDfTEhH7YGPqG/ePl+emBcbDYC2elgEqY2e+ag=="],
+ 
+-    "@next/swc-linux-arm64-musl": ["@next/swc-linux-arm64-musl@15.1.0", "", { "os": "linux", "cpu": "arm64" }, "sha512-Qn6vOuwaTCx3pNwygpSGtdIu0TfS1KiaYLYXLH5zq1scoTXdwYfdZtwvJTpB1WrLgiQE2Ne2kt8MZok3HlFqmg=="],
++    "@next/swc-linux-arm64-musl": ["@next/swc-linux-arm64-musl@15.1.9", "", { "os": "linux", "cpu": "arm64" }, "sha512-uZ1HazKcyWC7RA6j+S/8aYgvxmDqwnG+gE5S9MhY7BTMj7ahXKunpKuX8/BA2M7OvINLv7LTzoobQbw928p3WA=="],
+ 
+-    "@next/swc-linux-x64-gnu": ["@next/swc-linux-x64-gnu@15.1.0", "", { "os": "linux", "cpu": "x64" }, "sha512-yeNh9ofMqzOZ5yTOk+2rwncBzucc6a1lyqtg8xZv0rH5znyjxHOWsoUtSq4cUTeeBIiXXX51QOOe+VoCjdXJRw=="],
++    "@next/swc-linux-x64-gnu": ["@next/swc-linux-x64-gnu@15.1.9", "", { "os": "linux", "cpu": "x64" }, "sha512-gQIX1d3ct2RBlgbbWOrp+SHExmtmFm/HSW1Do5sSGMDyzbkYhS2sdq5LRDJWWsQu+/MqpgJHqJT6ORolKp/U1g=="],
+ 
+-    "@next/swc-linux-x64-musl": ["@next/swc-linux-x64-musl@15.1.0", "", { "os": "linux", "cpu": "x64" }, "sha512-t9IfNkHQs/uKgPoyEtU912MG6a1j7Had37cSUyLTKx9MnUpjj+ZDKw9OyqTI9OwIIv0wmkr1pkZy+3T5pxhJPg=="],
++    "@next/swc-linux-x64-musl": ["@next/swc-linux-x64-musl@15.1.9", "", { "os": "linux", "cpu": "x64" }, "sha512-fJOwxAbCeq6Vo7pXZGDP6iA4+yIBGshp7ie2Evvge7S7lywyg7b/SGqcvWq/jYcmd0EbXdb7hBfdqSQwTtGTPg=="],
+ 
+-    "@next/swc-win32-arm64-msvc": ["@next/swc-win32-arm64-msvc@15.1.0", "", { "os": "win32", "cpu": "arm64" }, "sha512-WEAoHyG14t5sTavZa1c6BnOIEukll9iqFRTavqRVPfYmfegOAd5MaZfXgOGG6kGo1RduyGdTHD4+YZQSdsNZXg=="],
++    "@next/swc-win32-arm64-msvc": ["@next/swc-win32-arm64-msvc@15.1.9", "", { "os": "win32", "cpu": "arm64" }, "sha512-crfbUkAd9PVg9nGfyjSzQbz82dPvc4pb1TeP0ZaAdGzTH6OfTU9kxidpFIogw0DYIEadI7hRSvuihy2NezkaNQ=="],
+ 
+-    "@next/swc-win32-x64-msvc": ["@next/swc-win32-x64-msvc@15.1.0", "", { "os": "win32", "cpu": "x64" }, "sha512-J1YdKuJv9xcixzXR24Dv+4SaDKc2jj31IVUEMdO5xJivMTXuE6MAdIi4qPjSymHuFG8O5wbfWKnhJUcHHpj5CA=="],
++    "@next/swc-win32-x64-msvc": ["@next/swc-win32-x64-msvc@15.1.9", "", { "os": "win32", "cpu": "x64" }, "sha512-SBB0oA4E2a0axUrUwLqXlLkSn+bRx9OWU6LheqmRrO53QEAJP7JquKh3kF0jRzmlYOWFZtQwyIWJMEJMtvvDcQ=="],
+ 
+     "@nodelib/fs.scandir": ["@nodelib/fs.scandir@2.1.5", "", { "dependencies": { "@nodelib/fs.stat": "2.0.5", "run-parallel": "^1.1.9" } }, "sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g=="],
+ 
+@@ -477,7 +477,7 @@
+ 
+     "eslint": ["eslint@9.39.2", "", { "dependencies": { "@eslint-community/eslint-utils": "^4.8.0", "@eslint-community/regexpp": "^4.12.1", "@eslint/config-array": "^0.21.1", "@eslint/config-helpers": "^0.4.2", "@eslint/core": "^0.17.0", "@eslint/eslintrc": "^3.3.1", "@eslint/js": "9.39.2", "@eslint/plugin-kit": "^0.4.1", "@humanfs/node": "^0.16.6", "@humanwhocodes/module-importer": "^1.0.1", "@humanwhocodes/retry": "^0.4.2", "@types/estree": "^1.0.6", "ajv": "^6.12.4", "chalk": "^4.0.0", "cross-spawn": "^7.0.6", "debug": "^4.3.2", "escape-string-regexp": "^4.0.0", "eslint-scope": "^8.4.0", "eslint-visitor-keys": "^4.2.1", "espree": "^10.4.0", "esquery": "^1.5.0", "esutils": "^2.0.2", "fast-deep-equal": "^3.1.3", "file-entry-cache": "^8.0.0", "find-up": "^5.0.0", "glob-parent": "^6.0.2", "ignore": "^5.2.0", "imurmurhash": "^0.1.4", "is-glob": "^4.0.0", "json-stable-stringify-without-jsonify": "^1.0.1", "lodash.merge": "^4.6.2", "minimatch": "^3.1.2", "natural-compare": "^1.4.0", "optionator": "^0.9.3" }, "peerDependencies": { "jiti": "*" }, "optionalPeers": ["jiti"], "bin": { "eslint": "bin/eslint.js" } }, "sha512-LEyamqS7W5HB3ujJyvi0HQK/dtVINZvd5mAAp9eT5S/ujByGjiZLCzPcHVzuXbpJDJF/cxwHlfceVUDZ2lnSTw=="],
+ 
+-    "eslint-config-next": ["eslint-config-next@15.1.0", "", { "dependencies": { "@next/eslint-plugin-next": "15.1.0", "@rushstack/eslint-patch": "^1.10.3", "@typescript-eslint/eslint-plugin": "^5.4.2 || ^6.0.0 || ^7.0.0 || ^8.0.0", "@typescript-eslint/parser": "^5.4.2 || ^6.0.0 || ^7.0.0 || ^8.0.0", "eslint-import-resolver-node": "^0.3.6", "eslint-import-resolver-typescript": "^3.5.2", "eslint-plugin-import": "^2.31.0", "eslint-plugin-jsx-a11y": "^6.10.0", "eslint-plugin-react": "^7.37.0", "eslint-plugin-react-hooks": "^5.0.0" }, "peerDependencies": { "eslint": "^7.23.0 || ^8.0.0 || ^9.0.0", "typescript": ">=3.3.1" }, "optionalPeers": ["typescript"] }, "sha512-gADO+nKVseGso3DtOrYX9H7TxB/MuX7AUYhMlvQMqLYvUWu4HrOQuU7cC1HW74tHIqkAvXdwgAz3TCbczzSEXw=="],
++    "eslint-config-next": ["eslint-config-next@15.1.11", "", { "dependencies": { "@next/eslint-plugin-next": "15.1.11", "@rushstack/eslint-patch": "^1.10.3", "@typescript-eslint/eslint-plugin": "^5.4.2 || ^6.0.0 || ^7.0.0 || ^8.0.0", "@typescript-eslint/parser": "^5.4.2 || ^6.0.0 || ^7.0.0 || ^8.0.0", "eslint-import-resolver-node": "^0.3.6", "eslint-import-resolver-typescript": "^3.5.2", "eslint-plugin-import": "^2.31.0", "eslint-plugin-jsx-a11y": "^6.10.0", "eslint-plugin-react": "^7.37.0", "eslint-plugin-react-hooks": "^5.0.0" }, "peerDependencies": { "eslint": "^7.23.0 || ^8.0.0 || ^9.0.0", "typescript": ">=3.3.1" }, "optionalPeers": ["typescript"] }, "sha512-RK5q3f8CKMTwNXULOqd2TAsz+7kA5+5fy5YK7T6SeczLFOuOUcuJOGlYUbyoeU6+UKQrpFsYgCz71hI1F9q5Cg=="],
+ 
+     "eslint-import-resolver-node": ["eslint-import-resolver-node@0.3.9", "", { "dependencies": { "debug": "^3.2.7", "is-core-module": "^2.13.0", "resolve": "^1.22.4" } }, "sha512-WFj2isz22JahUv+B788TlO3N6zL3nNJGU8CcZbPZvVEkBPaJdCV4vy5wyghty5ROFbCRnm132v8BScu5/1BQ8g=="],
+ 
+@@ -793,7 +793,7 @@
+ 
+     "natural-compare": ["natural-compare@1.4.0", "", {}, "sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw=="],
+ 
+-    "next": ["next@15.1.0", "", { "dependencies": { "@next/env": "15.1.0", "@swc/counter": "0.1.3", "@swc/helpers": "0.5.15", "busboy": "1.6.0", "caniuse-lite": "^1.0.30001579", "postcss": "8.4.31", "styled-jsx": "5.1.6" }, "optionalDependencies": { "@next/swc-darwin-arm64": "15.1.0", "@next/swc-darwin-x64": "15.1.0", "@next/swc-linux-arm64-gnu": "15.1.0", "@next/swc-linux-arm64-musl": "15.1.0", "@next/swc-linux-x64-gnu": "15.1.0", "@next/swc-linux-x64-musl": "15.1.0", "@next/swc-win32-arm64-msvc": "15.1.0", "@next/swc-win32-x64-msvc": "15.1.0", "sharp": "^0.33.5" }, "peerDependencies": { "@opentelemetry/api": "^1.1.0", "@playwright/test": "^1.41.2", "babel-plugin-react-compiler": "*", "react": "^18.2.0 || 19.0.0-rc-de68d2f4-20241204 || ^19.0.0", "react-dom": "^18.2.0 || 19.0.0-rc-de68d2f4-20241204 || ^19.0.0", "sass": "^1.3.0" }, "optionalPeers": ["@opentelemetry/api", "@playwright/test", "babel-plugin-react-compiler", "sass"], "bin": { "next": "dist/bin/next" } }, "sha512-QKhzt6Y8rgLNlj30izdMbxAwjHMFANnLwDwZ+WQh5sMhyt4lEBqDK9QpvWHtIM4rINKPoJ8aiRZKg5ULSybVHw=="],
++    "next": ["next@15.1.11", "", { "dependencies": { "@next/env": "15.1.11", "@swc/counter": "0.1.3", "@swc/helpers": "0.5.15", "busboy": "1.6.0", "caniuse-lite": "^1.0.30001579", "postcss": "8.4.31", "styled-jsx": "5.1.6" }, "optionalDependencies": { "@next/swc-darwin-arm64": "15.1.9", "@next/swc-darwin-x64": "15.1.9", "@next/swc-linux-arm64-gnu": "15.1.9", "@next/swc-linux-arm64-musl": "15.1.9", "@next/swc-linux-x64-gnu": "15.1.9", "@next/swc-linux-x64-musl": "15.1.9", "@next/swc-win32-arm64-msvc": "15.1.9", "@next/swc-win32-x64-msvc": "15.1.9", "sharp": "^0.33.5" }, "peerDependencies": { "@opentelemetry/api": "^1.1.0", "@playwright/test": "^1.41.2", "babel-plugin-react-compiler": "*", "react": "^18.2.0 || 19.0.0-rc-de68d2f4-20241204 || ^19.0.0", "react-dom": "^18.2.0 || 19.0.0-rc-de68d2f4-20241204 || ^19.0.0", "sass": "^1.3.0" }, "optionalPeers": ["@opentelemetry/api", "@playwright/test", "babel-plugin-react-compiler", "sass"], "bin": { "next": "dist/bin/next" } }, "sha512-UiVJaOGhKST58AadwbFUZThlNBmYhKqaCs8bVtm4plTxsgKq0mJ0zTsp7t7j/rzsbAEj9WcAMdZCztjByi4EoQ=="],
+ 
+     "node-releases": ["node-releases@2.0.27", "", {}, "sha512-nmh3lCkYZ3grZvqcCH+fjmQ7X+H0OeZgP40OierEaAptX4XofMh5kwNbWh7lBduUzCcV/8kZ+NDLCwm2iorIlA=="],
+ 
+diff --git a/components/challenge/ConsolePanel.tsx b/components/challenge/ConsolePanel.tsx
+index aa7cd2bd..d749838e 100644
+--- a/components/challenge/ConsolePanel.tsx
++++ b/components/challenge/ConsolePanel.tsx
+@@ -1,20 +1,19 @@
++'use client';
++
+ import React, { useRef, useEffect } from 'react';
+ import { Terminal } from 'lucide-react';
+ import { cn } from '@/lib/utils';
+ import RateLimitIndicator from '@/components/shared/RateLimitIndicator';
+-import { RateLimitState } from '@/hooks/useChallengeRunner';
++import { useChallenge } from '@/context/ChallengeContext';
+ 
+-interface ConsolePanelProps {
+-    output: string;
+-    status: 'idle' | 'running' | 'success' | 'failure' | 'cancelled';
+-    rateLimit: RateLimitState;
+-}
++/**
++ * Console panel showing execution output and status.
++ * Uses context to access runner state.
++ */
++export default function ConsolePanel() {
++    const { runner } = useChallenge();
++    const { output, status, rateLimit } = runner;
+ 
+-export default function ConsolePanel({
+-    output,
+-    status,
+-    rateLimit
+-}: ConsolePanelProps) {
+     const terminalRef = useRef<HTMLDivElement>(null);
+ 
+     // Auto-scroll terminal
+diff --git a/components/challenge/EditorPanel.tsx b/components/challenge/EditorPanel.tsx
+index d4706034..02a200b5 100644
+--- a/components/challenge/EditorPanel.tsx
++++ b/components/challenge/EditorPanel.tsx
+@@ -1,71 +1,68 @@
++'use client';
++
+ import React from 'react';
+ import Editor, { Monaco } from '@monaco-editor/react';
+ import type { editor } from 'monaco-editor';
+ import { FileCode, Plus, X, Loader2, Play, Eye, Save, Lock, Square } from 'lucide-react';
+ import { cn } from '@/lib/utils';
+ import SyncIndicator from '@/components/shared/SyncIndicator';
+-import { Tab } from '@/hooks/useChallengeState';
++import { useChallenge } from '@/context/ChallengeContext';
+ import { Challenge } from '@/types/challenge';
+ 
+ interface EditorPanelProps {
+     challenge: Challenge;
+-    tabs: Tab[];
+-    activeTabId: string;
+-    setActiveTabId: (id: string) => void;
+-    updateTabContent: (value: string | undefined) => void;
+-    addNewTab: () => void;
+-    closeTab: (e: React.MouseEvent, id: string) => void;
+-    setEditorInstance: (editor: editor.IStandaloneCodeEditor) => void;
+-    setMonacoInstance: (monaco: Monaco) => void;
+-    submitSolution: () => void;
+-    cancelSubmission: () => void;
+-    isLoading: boolean;
+-    revealSolution: () => void;
+-    isAuthenticated: boolean;
+-    isDebriefLocked: boolean;
+-    toggleSaveChallenge: () => void;
+-    isSaved: boolean;
+-    hasRevealedSolution: boolean;
+-    handleSaveSolution: () => void;
+-    syncStatus: 'idle' | 'saving' | 'saved' | 'error' | 'offline';
+-    isLocked: boolean;
+-    isMobile: boolean;
+-    activeTab: Tab;
+-    posthog?: any;
+     showPiiWarning?: boolean;
+ }
+ 
+-export default function EditorPanel({
+-    challenge,
+-    tabs,
+-    activeTabId,
+-    setActiveTabId,
+-    updateTabContent,
+-    addNewTab,
+-    closeTab,
+-    setEditorInstance,
+-    setMonacoInstance,
+-    submitSolution,
+-    cancelSubmission,
+-    isLoading,
+-    revealSolution,
+-    isAuthenticated,
+-    isDebriefLocked,
+-    toggleSaveChallenge,
+-    isSaved,
+-    hasRevealedSolution,
+-    handleSaveSolution,
+-    syncStatus,
+-    isLocked,
+-    isMobile,
+-    activeTab,
+-    posthog,
+-    showPiiWarning
+-}: EditorPanelProps) {
++/**
++ * Code editor panel with tabs, action buttons, and Monaco editor.
++ * Uses context to access all workspace state instead of props.
++ */
++export default function EditorPanel({ challenge, showPiiWarning = true }: EditorPanelProps) {
++    const {
++        // Tab management
++        tabs,
++        activeTabId,
++        activeTab,
++        setActiveTabId,
++        updateTabContent,
++        addNewTab,
++        closeTab,
++        setEditorInstance,
++        setMonacoInstance,
++
++        // Submission
++        handleSubmit,
++        runner,
++
++        // Solution reveal
++        revealSolutionHandler,
++        hasRevealedSolution,
++
++        // Auth & Save
++        isAuthenticated,
++        isDebriefLocked,
++        toggleSaveChallenge,
++        isSaved,
++        handleSaveSolution,
++        syncStatus,
++
++        // Lock & Display
++        isLocked,
++        isMobile,
++
++        // Analytics
++        posthog
++    } = useChallenge();
++
++    const isLoading = runner.isLoading;
++    const cancelSubmission = runner.cancelSubmission;
++
+     return (
+         <div className="h-full flex flex-col bg-deep-anthracite relative">
+             {/* Editor Header */}
+             <div className="h-10 border-b border-tungsten-grey bg-carbon-grey/50 flex items-center justify-between px-2 shrink-0 relative z-20">
++                {/* Tab Bar */}
+                 <div className="flex items-center gap-1 h-full pt-1 overflow-x-auto scrollbar-none min-w-0 flex-1 mr-2">
+                     {tabs.map(tab => (
+                         <div
+@@ -93,9 +90,11 @@ export default function EditorPanel({
+                     </button>
+                 </div>
+ 
++                {/* Action Buttons */}
+                 <div className="flex items-center gap-2 ml-2">
++                    {/* Execute Button */}
+                     <button
+-                        onClick={submitSolution}
++                        onClick={handleSubmit}
+                         disabled={isLoading || isLocked}
+                         className={cn(
+                             "flex items-center gap-2 px-3 md:px-4 py-1.5 text-xs font-bold tracking-wider transition-all border shrink-0",
+@@ -130,9 +129,10 @@ export default function EditorPanel({
+                         </button>
+                     )}
+ 
++                    {/* Reveal Solution Button */}
+                     {(challenge.solutionCode || challenge.hasSolution) && (
+                         <button
+-                            onClick={revealSolution}
++                            onClick={revealSolutionHandler}
+                             disabled={isLocked}
+                             className={cn(
+                                 "flex items-center gap-2 px-3 md:px-4 py-1.5 text-xs font-bold tracking-wider transition-all border shrink-0",
+@@ -187,7 +187,7 @@ export default function EditorPanel({
+                     theme="vs-dark"
+                     value={activeTab.content}
+                     onChange={updateTabContent}
+-                    onMount={(editor, monaco) => {
++                    onMount={(editor: editor.IStandaloneCodeEditor, monaco: Monaco) => {
+                         setEditorInstance(editor);
+                         setMonacoInstance(monaco);
+                         monaco.editor.defineTheme('industrial-dark', {
+diff --git a/components/modals/ChallengeInterface.tsx b/components/modals/ChallengeInterface.tsx
+deleted file mode 100644
+index 55cfbb10..00000000
+--- a/components/modals/ChallengeInterface.tsx
++++ /dev/null
+@@ -1,874 +0,0 @@
+-'use client';
+-
+-import React, { useState, useEffect, useRef, useMemo } from 'react';
+-import { useSearchParams } from 'next/navigation';
+-import ReactMarkdown from 'react-markdown';
+-import {
+-    BookOpen,
+-    Lock,
+-    Unlock,
+-    AlertTriangle,
+-    History,
+-    LayoutGrid,
+-    Settings,
+-    User,
+-    LogOut,
+-    X
+-} from 'lucide-react';
+-import Image from 'next/image';
+-import Link from 'next/link';
+-import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
+-import { Toaster, toast } from 'react-hot-toast';
+-import { usePostHog } from 'posthog-js/react';
+-
+-
+-import ConfirmationModal from './ConfirmationModal';
+-import AuthModal from './AuthModal';
+-import SuccessModal from './SuccessModal';
+-import EditorPanel from '../challenge/EditorPanel';
+-import ConsolePanel from '../challenge/ConsolePanel';
+-
+-import { Challenge } from '@/types/challenge';
+-import { createClient } from '@/utils/supabase/client';
+-import { useAuth } from '@/utils/auth';
+-import { logout } from '@/app/(auth)/auth/actions';
+-import { cn } from '@/lib/utils';
+-import { useChallengeProgress } from '@/hooks/useChallengeProgress';
+-import { useAllProgress } from '@/hooks/useAllProgress';
+-import { getChallengeStatus } from '@/lib/challengeStatus';
+-import { tracks } from '@/data/challenges';
+-import { logger } from '@/lib/logger';
+-
+-
+-const ONBOARDING_COMPLETE_KEY = 'tentropy_onboarding_complete';
+-const INTRO_CHALLENGE_ID = 'ai-cost-cache-002';
+-
+-import { useChallengeRunner } from '@/hooks/useChallengeRunner';
+-import { useChallengeState } from '@/hooks/useChallengeState';
+-import { useAttemptHistory } from '@/hooks/useAttemptHistory';
+-import { Attempt } from '@/types/attempt';
+-import { revealSolution } from '@/app/actions/challenge';
+-
+-// Simple ANSI stripper
+-const stripAnsi = (str: string) => str.replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1, 4}(?:;[0-9]{0, 4})*)?[0-9A-ORZcf-nqry=><]/g, '');
+-
+-interface ChallengeInterfaceProps {
+-    challenge: Challenge;
+-}
+-
+-export default function ChallengeInterface({ challenge }: ChallengeInterfaceProps) {
+-    // Hooks
+-    const {
+-        tabs,
+-        activeTabId,
+-        activeTab,
+-        history,
+-        isHistoryOpen,
+-        monacoInstance,
+-        editorInstance,
+-        setTabs,
+-        setActiveTabId,
+-        setHistory,
+-        setIsHistoryOpen,
+-        setMonacoInstance,
+-        setEditorInstance,
+-        updateTabContent,
+-        addNewTab,
+-        closeTab,
+-        loadAttempt
+-    } = useChallengeState(challenge);
+-
+-    const { isAuthenticated, user, logout: authLogout } = useAuth();
+-    const runner = useChallengeRunner(challenge, user);
+-    const posthog = usePostHog();
+-    const searchParams = useSearchParams();
+-
+-    // Progress tracking
+-    const { progress, updateProgress, syncStatus, isSaving } = useChallengeProgress(challenge.id);
+-    const { progressMap, loading: loadingAllProgress } = useAllProgress();
+-
+-    // Fetch persistent attempt history from DB (for authenticated users)
+-    const { attempts: dbAttempts } = useAttemptHistory(challenge.id);
+-
+-    // Merge DB attempts with session-only history (avoid duplicates)
+-    const mergedHistory = useMemo(() => {
+-        // Convert DB attempts to the same format as session history
+-        const dbFormatted: Attempt[] = dbAttempts.map(a => ({
+-            id: a.id,
+-            timestamp: new Date(a.created_at).getTime(),
+-            status: a.status ? 'PASS' : 'FAIL',
+-            code: a.code || '',
+-            executionTime: a.execution_time || 0
+-        }));
+-
+-        // Get session attempts that aren't in DB yet (by timestamp proximity)
+-        const sessionOnly = history.filter(h =>
+-            !dbFormatted.some(d => Math.abs(d.timestamp - h.timestamp) < 5000)
+-        );
+-
+-        // Combine and sort by timestamp (newest first)
+-        return [...sessionOnly, ...dbFormatted].sort((a, b) => b.timestamp - a.timestamp);
+-    }, [dbAttempts, history]);
+-
+-    // UI State
+-
+-    const [showRevealConfirm, setShowRevealConfirm] = useState(false);
+-    const [hasRevealedSolution, setHasRevealedSolution] = useState(false);
+-    const [unlockedCertId, setUnlockedCertId] = useState<string | null>(null);
+-    const [unlockedTrackTitle, setUnlockedTrackTitle] = useState<string | null>(null);
+-    const [showSuccessModal, setShowSuccessModal] = useState(false);
+-    const [activeLeftTab, setActiveLeftTab] = useState<'BRIEFING' | 'DEBRIEF'>('BRIEFING');
+-    const [isDebriefLocked, setIsDebriefLocked] = useState(true);
+-    const [isMenuOpen, setIsMenuOpen] = useState(false);
+-    const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+-    const [pendingSaveAttempt, setPendingSaveAttempt] = useState<Attempt | null>(null);
+-    const [isSaved, setIsSaved] = useState(false);
+-
+-    // Guest onboarding state
+-    const [isIntroChallenge, setIsIntroChallenge] = useState(false);
+-    const [showOnboardingBanner, setShowOnboardingBanner] = useState(false);
+-
+-    const successCountRef = useRef<number>(0);
+-    const dropdownRef = useRef<HTMLDivElement>(null);
+-    const scrollContainerRef = useRef<HTMLDivElement>(null);
+-
+-    // Determine lock status
+-    const track = tracks.find(t => t.challengeIds.includes(challenge.id));
+-    const trackIds = track ? track.challengeIds : [];
+-    const challengeStatus = getChallengeStatus(challenge.id, progressMap, trackIds);
+-    const isLocked = challengeStatus === 'locked';
+-
+-    // Check if challenge is solved via query param or progress
+-    useEffect(() => {
+-        const isSolvedParam = searchParams.get('solved') === 'true';
+-        const isSolvedProgress = progress?.status === 'solved';
+-
+-        if (isSolvedParam || isSolvedProgress) {
+-            setIsDebriefLocked(false);
+-            setActiveLeftTab('DEBRIEF');
+-        }
+-    }, [searchParams, progress]);
+-
+-    // Fetch saved status
+-    useEffect(() => {
+-        const checkSavedStatus = async () => {
+-            if (isAuthenticated && user) {
+-                const supabase = createClient();
+-                const { data, error } = await supabase
+-                    .from('saved_challenges')
+-                    .select('id')
+-                    .eq('user_id', user.id)
+-                    .eq('challenge_id', challenge.id)
+-                    .single();
+-
+-                if (error) {
+-                    if (error.code !== 'PGRST116') {
+-                        logger.error('Error fetching saved status:', error);
+-                    }
+-                } else if (data) {
+-                    setIsSaved(true);
+-                    setIsDebriefLocked(false);
+-                    setHasRevealedSolution(true);
+-                }
+-            }
+-        };
+-        checkSavedStatus();
+-    }, [isAuthenticated, user, challenge.id]);
+-
+-    // Check for pending save after authentication
+-    useEffect(() => {
+-        const processPendingSave = async () => {
+-            if (isAuthenticated && user) {
+-                const pendingSaveStr = localStorage.getItem('tentropy_pending_save');
+-                if (pendingSaveStr) {
+-                    try {
+-                        const pendingSave = JSON.parse(pendingSaveStr);
+-                        logger.debug('[processPendingSave] Found pending save:', pendingSave);
+-
+-                        const isRecent = Date.now() - pendingSave.timestamp < 5 * 60 * 1000;
+-                        const isCurrentChallenge = pendingSave.challengeId === challenge.id;
+-
+-                        if (isRecent && isCurrentChallenge) {
+-                            logger.info('[processPendingSave] Saving challenge to saved_challenges...');
+-                            const supabase = createClient();
+-                            const { data, error } = await supabase
+-                                .from('saved_challenges')
+-                                .insert({
+-                                    user_id: user.id,
+-                                    challenge_id: challenge.id
+-                                })
+-                                .select();
+-
+-                            if (error) {
+-                                logger.error('Error saving challenge:', error);
+-                            } else {
+-                                logger.info('Challenge saved successfully:', data);
+-                                setIsSaved(true);
+-                                setIsDebriefLocked(false);
+-                                setHasRevealedSolution(true);
+-                            }
+-                        }
+-                        localStorage.removeItem('tentropy_pending_save');
+-                    } catch (e) {
+-                        logger.error('Error processing pending save:', e);
+-                        localStorage.removeItem('tentropy_pending_save');
+-                    }
+-                }
+-            }
+-        };
+-        processPendingSave();
+-    }, [isAuthenticated, user, challenge.id]);
+-
+-    // Close dropdown when clicking outside
+-    useEffect(() => {
+-        const handleClickOutside = (event: MouseEvent) => {
+-            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+-                setIsMenuOpen(false);
+-            }
+-        };
+-        document.addEventListener('mousedown', handleClickOutside);
+-        return () => document.removeEventListener('mousedown', handleClickOutside);
+-    }, []);
+-
+-    // Window resize handler for responsive layout
+-    const [isMobile, setIsMobile] = useState(false);
+-    useEffect(() => {
+-        const checkMobile = () => setIsMobile(window.innerWidth < 768);
+-        checkMobile();
+-        window.addEventListener('resize', checkMobile);
+-        return () => window.removeEventListener('resize', checkMobile);
+-    }, []);
+-
+-    // Detect if this is the intro challenge for onboarding
+-    useEffect(() => {
+-        const isIntro = challenge.id === INTRO_CHALLENGE_ID;
+-        const hasCompletedOnboarding = localStorage.getItem(ONBOARDING_COMPLETE_KEY);
+-        setIsIntroChallenge(isIntro);
+-        // Show onboarding banner only for intro challenge, unauthenticated users, and first-time guests
+-        setShowOnboardingBanner(isIntro && !isAuthenticated && !hasCompletedOnboarding);
+-    }, [challenge.id, isAuthenticated]);
+-
+-    const handleSuccess = async (executionTime: number) => {
+-        successCountRef.current += 1;
+-        if (successCountRef.current === 1 || successCountRef.current % 20 === 0) {
+-            setShowSuccessModal(true);
+-        }
+-
+-        setIsDebriefLocked(false);
+-
+-        // Mark onboarding complete for intro challenge
+-        if (challenge.id === INTRO_CHALLENGE_ID) {
+-            localStorage.setItem(ONBOARDING_COMPLETE_KEY, 'true');
+-            setShowOnboardingBanner(false);
+-        }
+-
+-        await updateProgress({
+-            status: 'solved',
+-            solvedAt: new Date().toISOString(),
+-            lastAttemptAt: new Date().toISOString()
+-        });
+-
+-        // Create attempt object
+-        const newAttempt: Attempt = {
+-            id: Date.now().toString(),
+-            timestamp: Date.now(),
+-            status: 'PASS',
+-            code: activeTab.content,
+-            executionTime: executionTime
+-        };
+-
+-        // Save attempt
+-        if (isAuthenticated && user) {
+-            const supabase = createClient();
+-            await supabase.from('challenge_attempts').insert({
+-                user_id: user.id,
+-                challenge_id: challenge.id,
+-                status: true,
+-                code: activeTab.content,
+-                execution_time: executionTime
+-            });
+-
+-            // Check for certificate
+-            try {
+-                const currentTrack = tracks.find(t => t.challengeIds.includes(challenge.id));
+-                if (currentTrack) {
+-                    const { data: progressData, error: progressError } = await supabase
+-                        .from('user_progress')
+-                        .select('challenge_id, status')
+-                        .in('challenge_id', currentTrack.challengeIds)
+-                        .eq('user_id', user.id);
+-
+-                    if (!progressError) {
+-                        const solvedIds = new Set(progressData?.filter(p => p.status === 'solved').map(p => p.challenge_id) || []);
+-                        solvedIds.add(challenge.id);
+-
+-                        const isTrackComplete = currentTrack.challengeIds.every(id => solvedIds.has(id));
+-
+-                        if (isTrackComplete) {
+-                            logger.info('[ChallengeInterface] Track complete! Issuing certificate...');
+-                            const { data: certId, error: certError } = await supabase.rpc('issue_certificate', {
+-                                p_user_id: user.id,
+-                                p_track_id: currentTrack.id,
+-                                p_metadata: { userName: user.name || user.email?.split('@')[0] || 'Operator' }
+-                            });
+-
+-                            if (certId && !certError) {
+-                                setUnlockedCertId(certId);
+-                                setUnlockedTrackTitle(currentTrack.title);
+-                                toast.success(`CERTIFICATE UNLOCKED: ${currentTrack.title}`, {
+-                                    style: { background: '#FFB000', color: '#000', fontFamily: 'monospace', fontWeight: 'bold' },
+-                                    iconTheme: { primary: '#000', secondary: '#FFB000' },
+-                                    duration: 5000
+-                                });
+-                            }
+-                        }
+-                    }
+-                }
+-            } catch (error) {
+-                logger.error('[ChallengeInterface] Exception in certificate logic:', error);
+-            }
+-        }
+-
+-        setHistory(prev => [newAttempt, ...prev]);
+-    };
+-
+-    const handleFailure = async () => {
+-        await updateProgress({
+-            status: 'in_progress',
+-            lastAttemptAt: new Date().toISOString()
+-        });
+-
+-        const newAttempt: Attempt = {
+-            id: Date.now().toString(),
+-            timestamp: Date.now(),
+-            status: 'FAIL',
+-            code: activeTab.content,
+-            executionTime: 0 // We might want to track this even for failures
+-        };
+-        setHistory(prev => [newAttempt, ...prev]);
+-    };
+-
+-    const handleSubmit = () => {
+-        runner.submitSolution(activeTab.content, handleSuccess, handleFailure);
+-    };
+-
+-
+-
+-    const revealSolutionHandler = () => {
+-        if (!challenge.solutionCode && !challenge.hasSolution) {
+-            toast.error("No solution available for this challenge.");
+-            return;
+-        }
+-        setShowRevealConfirm(true);
+-    };
+-
+-    const confirmReveal = async () => {
+-        try {
+-            let code = challenge.solutionCode;
+-
+-            if (!code) {
+-                const result = await revealSolution(challenge.id);
+-                if (result.success && result.code) {
+-                    code = result.code;
+-                } else {
+-                    toast.error(result.error || "Failed to fetch solution");
+-                    return;
+-                }
+-            }
+-
+-            if (code) {
+-                updateTabContent(code);
+-                setHasRevealedSolution(true);
+-                posthog?.capture('solution_revealed', { challenge_id: challenge.id });
+-
+-                setIsDebriefLocked(false);
+-                setActiveLeftTab('DEBRIEF');
+-
+-                // Mark onboarding complete for intro challenge
+-                if (challenge.id === INTRO_CHALLENGE_ID) {
+-                    localStorage.setItem(ONBOARDING_COMPLETE_KEY, 'true');
+-                    setShowOnboardingBanner(false);
+-                }
+-
+-                if (scrollContainerRef.current) {
+-                    scrollContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+-                }
+-            }
+-        } catch (error) {
+-            logger.error('Error revealing solution:', error);
+-            toast.error("An error occurred while revealing the solution.");
+-        }
+-        setShowRevealConfirm(false);
+-    };
+-
+-    const handleSaveSolution = () => {
+-        localStorage.setItem('tentropy_pending_save', JSON.stringify({
+-            challengeId: challenge.id,
+-            timestamp: Date.now()
+-        }));
+-        logger.debug('[handleSaveSolution] Stored pending save in localStorage');
+-        setIsAuthModalOpen(true);
+-    };
+-
+-    const handleAuthSuccess = async () => {
+-        logger.debug('[handleAuthSuccess] Reloading page...');
+-        window.location.reload();
+-    };
+-
+-    const toggleSaveChallenge = async () => {
+-        if (!isAuthenticated || !user) {
+-            toast.error("Please sign in to save challenges");
+-            return;
+-        }
+-
+-        const supabase = createClient();
+-
+-        if (isSaved) {
+-            const { error } = await supabase
+-                .from('saved_challenges')
+-                .delete()
+-                .eq('user_id', user.id)
+-                .eq('challenge_id', challenge.id);
+-
+-            if (error) {
+-                logger.error('Error unsaving challenge:', error);
+-                toast.error(`Failed to unsave: ${error.message}`);
+-            } else {
+-                setIsSaved(false);
+-                toast.success("Challenge removed from saved items");
+-            }
+-        } else {
+-            const { data, error } = await supabase
+-                .from('saved_challenges')
+-                .insert({
+-                    user_id: user.id,
+-                    challenge_id: challenge.id
+-                })
+-                .select();
+-
+-            if (error) {
+-                logger.error('Error saving challenge:', error);
+-                toast.error(`Failed to save: ${error.message}`);
+-            } else {
+-                logger.info('Challenge saved successfully:', data);
+-                setIsSaved(true);
+-                setIsDebriefLocked(false);
+-                setHasRevealedSolution(true);
+-                toast.success("Challenge saved! Solution & Debrief unlocked.");
+-            }
+-        }
+-    };
+-
+-    const DescriptionPanel = (
+-        <div className={cn(
+-            "flex flex-col bg-deep-anthracite/95 backdrop-blur-sm",
+-            isMobile ? "h-auto min-h-fit" : "h-full border-r border-tungsten-grey"
+-        )}>
+-            <div className="h-10 border-b border-tungsten-grey flex items-center bg-carbon-grey/50 shrink-0">
+-                <button
+-                    onClick={() => setActiveLeftTab('BRIEFING')}
+-                    className={cn(
+-                        "h-full px-4 text-xs font-bold tracking-widest transition-colors border-r border-tungsten-grey flex items-center gap-2",
+-                        activeLeftTab === 'BRIEFING'
+-                            ? "bg-deep-anthracite text-hazard-amber border-b-2 border-b-hazard-amber"
+-                            : "text-gray-500 hover:text-gray-300 hover:bg-white/5"
+-                    )}
+-                >
+-                    <BookOpen className="w-3 h-3" />
+-                    BRIEFING
+-                </button>
+-                <button
+-                    onClick={() => !isDebriefLocked && setActiveLeftTab('DEBRIEF')}
+-                    disabled={isDebriefLocked}
+-                    className={cn(
+-                        "h-full px-4 text-xs font-bold tracking-widest transition-colors border-r border-tungsten-grey flex items-center gap-2",
+-                        activeLeftTab === 'DEBRIEF'
+-                            ? "bg-deep-anthracite text-hazard-amber border-b-2 border-b-hazard-amber"
+-                            : isDebriefLocked
+-                                ? "text-gray-600 cursor-not-allowed opacity-50"
+-                                : "text-gray-500 hover:text-gray-300 hover:bg-white/5"
+-                    )}
+-                >
+-                    {isDebriefLocked ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
+-                    DEBRIEF
+-                </button>
+-            </div>
+-
+-            <div className={cn(
+-                "p-4 md:p-6 scrollbar-thin scrollbar-thumb-tungsten-grey scrollbar-track-transparent",
+-                isMobile ? "overflow-visible h-auto" : "flex-1 overflow-y-auto"
+-            )}>
+-                {activeLeftTab === 'BRIEFING' ? (
+-                    <>
+-                        <div className="mb-6 md:mb-8 border-l-2 border-hazard-amber pl-4">
+-                            <h1 className="text-xl md:text-2xl font-bold text-white mb-2 tracking-tight">{challenge.title}</h1>
+-                            <div className="flex items-center gap-4 text-xs font-mono text-gray-500">
+-                                <span className="px-2 py-1 border border-hazard-amber/30 text-hazard-amber bg-hazard-amber/10 rounded-sm">
+-                                    Difficulty: {challenge.difficulty.toUpperCase()}
+-                                </span>
+-                                <span>ID: {challenge.id}</span>
+-                            </div>
+-                        </div>
+-
+-                        <div className="prose prose-invert prose-sm max-w-none prose-headings:text-white prose-headings:font-mono prose-p:text-gray-400 prose-code:text-hazard-amber prose-code:bg-carbon-grey prose-code:px-1 prose-code:py-0.5 prose-code:rounded-none prose-pre:bg-carbon-grey prose-pre:border prose-pre:border-tungsten-grey">
+-                            <ReactMarkdown>{challenge.description}</ReactMarkdown>
+-                        </div>
+-                    </>
+-                ) : (
+-                    <div className="animate-in fade-in duration-300">
+-                        {isDebriefLocked ? (
+-                            <div className="flex flex-col items-center justify-center h-64 text-center border border-dashed border-tungsten-grey rounded-sm bg-black/20 p-8">
+-                                <div className="p-4 bg-tungsten-grey/10 rounded-full mb-4">
+-                                    <Lock className="w-8 h-8 text-gray-500" />
+-                                </div>
+-                                <h3 className="text-lg font-bold text-gray-400 mb-2">Encrypted Data</h3>
+-                                <p className="text-xs text-gray-600 max-w-[250px]">
+-                                    Solve the challenge or reveal the solution to decrypt this debrief.
+-                                </p>
+-                            </div>
+-                        ) : (
+-                            <div className="prose prose-invert prose-sm max-w-none prose-headings:text-white prose-headings:font-mono prose-p:text-gray-400 prose-code:text-hazard-amber prose-code:bg-carbon-grey prose-code:px-1 prose-code:py-0.5 prose-code:rounded-none prose-pre:bg-carbon-grey prose-pre:border prose-pre:border-tungsten-grey">
+-                                <ReactMarkdown>{challenge.debrief || "No debrief available."}</ReactMarkdown>
+-                            </div>
+-                        )}
+-                    </div>
+-                )}
+-            </div>
+-        </div>
+-    );
+-
+-    const RightPane = (
+-        <PanelGroup direction="vertical">
+-            <Panel defaultSize={70} minSize={30}>
+-                <EditorPanel
+-                    challenge={challenge}
+-                    tabs={tabs}
+-                    activeTabId={activeTabId}
+-                    setActiveTabId={setActiveTabId}
+-                    updateTabContent={updateTabContent}
+-                    addNewTab={addNewTab}
+-                    closeTab={closeTab}
+-                    setEditorInstance={setEditorInstance}
+-                    setMonacoInstance={setMonacoInstance}
+-                    submitSolution={handleSubmit}
+-                    cancelSubmission={runner.cancelSubmission}
+-                    isLoading={runner.isLoading}
+-                    revealSolution={revealSolutionHandler}
+-                    isAuthenticated={isAuthenticated}
+-                    isDebriefLocked={isDebriefLocked}
+-                    toggleSaveChallenge={toggleSaveChallenge}
+-                    isSaved={isSaved}
+-                    hasRevealedSolution={hasRevealedSolution}
+-                    handleSaveSolution={handleSaveSolution}
+-                    syncStatus={syncStatus}
+-                    isLocked={isLocked}
+-                    isMobile={isMobile}
+-                    activeTab={activeTab}
+-                    posthog={posthog}
+-                    showPiiWarning={true}
+-                />
+-            </Panel>
+-
+-            <PanelResizeHandle className="h-[2px] bg-tungsten-grey hover:bg-hazard-amber transition-colors" />
+-
+-            <Panel defaultSize={30} minSize={10}>
+-                <ConsolePanel
+-                    output={runner.output}
+-                    status={runner.status}
+-                    rateLimit={runner.rateLimit}
+-                />
+-            </Panel>
+-        </PanelGroup>
+-    );
+-
+-    return (
+-        <div className="h-screen flex flex-col bg-deep-anthracite text-gray-400 font-mono overflow-hidden selection:bg-hazard-amber selection:text-deep-anthracite">
+-            <Toaster position="bottom-right" toastOptions={{
+-                style: {
+-                    background: '#121214',
+-                    color: '#EDEDED',
+-                    border: '1px solid #27272A',
+-                    fontFamily: 'monospace',
+-                },
+-                success: { iconTheme: { primary: '#00E090', secondary: '#121214' } },
+-                error: { iconTheme: { primary: '#FFB000', secondary: '#121214' } }
+-            }} />
+-
+-            {/* Top Bar - Simplified for brevity, assuming NavBar component or similar could be used, but keeping inline for now to match original style */}
+-            <div className="h-14 border-b border-tungsten-grey bg-deep-anthracite flex items-center justify-between px-4 shrink-0 z-20 relative">
+-                <div className="flex items-center gap-4">
+-                    <Link href="/" className="flex items-center gap-2 group">
+-                        <div className="relative w-8 h-8 rounded overflow-hidden border border-hazard-amber/50 group-hover:border-hazard-amber transition-colors">
+-                            <Image src="/icon.jpg" alt="Tentropy" fill className="object-cover" />
+-                        </div>
+-                        <span className="font-bold tracking-tighter text-lg text-white group-hover:text-hazard-amber transition-colors hidden md:inline">TENTROPY</span>
+-                    </Link>
+-                </div>
+-
+-                {/* ... (Menu logic kept similar but cleaned up) ... */}
+-                {/* I'll use a simplified version of the menu for now to save space, or I can extract it too. 
+-                    For now, I'll keep the essential parts. */}
+-                <div className="flex items-center gap-2">
+-                    {/* History Dropdown */}
+-                    <div className="relative">
+-                        <button
+-                            onClick={() => setIsHistoryOpen(!isHistoryOpen)}
+-                            className={cn(
+-                                "p-2 rounded transition-colors relative",
+-                                isHistoryOpen ? "text-white bg-carbon-grey" : "text-gray-400 hover:text-white hover:bg-carbon-grey"
+-                            )}
+-                            title="Attempt History"
+-                        >
+-                            <History className="w-5 h-5" />
+-                        </button>
+-
+-                        {isHistoryOpen && (
+-                            <div className="absolute top-full right-0 mt-2 w-64 bg-deep-anthracite border border-tungsten-grey shadow-xl z-[100] max-h-96 overflow-y-auto rounded-sm">
+-                                <div className="p-2 border-b border-tungsten-grey text-xs font-bold text-gray-500 uppercase tracking-wider">
+-                                    Recent Attempts
+-                                </div>
+-                                {mergedHistory.length === 0 ? (
+-                                    <div className="p-4 text-center text-gray-500 text-xs italic">
+-                                        No attempts recorded yet.
+-                                    </div>
+-                                ) : (
+-                                    <div className="space-y-1">
+-                                        {mergedHistory.slice(0, 3).map((attempt) => (
+-                                            <button
+-                                                key={attempt.id || attempt.timestamp}
+-                                                onClick={() => loadAttempt(attempt)}
+-                                                className="w-full text-left p-2 rounded hover:bg-white/5 group transition-colors border border-transparent hover:border-tungsten-grey"
+-                                            >
+-                                                <div className="flex items-center justify-between text-xs mb-1">
+-                                                    <span className={cn("font-bold", attempt.status === 'PASS' ? "text-terminal-green" : "text-red-500")}>
+-                                                        {attempt.status}
+-                                                    </span>
+-                                                    <span className="text-[10px] text-gray-500 font-mono">
+-                                                        {new Date(attempt.timestamp).toLocaleTimeString()}
+-                                                    </span>
+-                                                </div>
+-                                                <div className="text-[10px] text-gray-400 font-mono truncate opacity-60 group-hover:opacity-100">
+-                                                    {attempt.executionTime}ms
+-                                                </div>
+-                                            </button>
+-                                        ))}
+-                                        {mergedHistory.length > 3 && (
+-                                            <Link
+-                                                href="/logs"
+-                                                className="block w-full text-center py-2 text-[10px] text-gray-500 hover:text-hazard-amber hover:bg-hazard-amber/5 rounded transition-colors uppercase tracking-wider font-bold mt-2 border border-dashed border-tungsten-grey hover:border-hazard-amber/30"
+-                                            >
+-                                                View All Logs ({mergedHistory.length})
+-                                            </Link>
+-                                        )}
+-                                    </div>
+-                                )}
+-                            </div>
+-                        )}
+-                    </div>
+-
+-                    {/* Challenges Link */}
+-                    <Link
+-                        href="/challenges"
+-                        className="p-2 text-gray-400 hover:text-white hover:bg-carbon-grey rounded transition-colors"
+-                        title="All Challenges"
+-                    >
+-                        <LayoutGrid className="w-5 h-5" />
+-                    </Link>
+-
+-                    <Link href="/" className="text-xs font-mono text-red-500 hover:text-red-400 ml-2 md:ml-4 hidden">
+-                        <span className="hidden md:inline">Exit</span>
+-                        <X className="w-5 h-5 md:hidden" />
+-                    </Link>
+-
+-                    {/* Auth Menu */}
+-                    <div className="ml-2 md:ml-4 border-l border-tungsten-grey pl-4">
+-                        <div className="relative" ref={dropdownRef}>
+-                            <button
+-                                onClick={() => setIsMenuOpen(!isMenuOpen)}
+-                                className="flex items-center gap-2 p-1 rounded-full border border-transparent hover:border-tungsten-grey hover:bg-carbon-grey transition-all"
+-                            >
+-                                <div className="w-8 h-8 rounded-full bg-hazard-amber/10 text-hazard-amber flex items-center justify-center border border-hazard-amber/20">
+-                                    {user?.avatarUrl ? (
+-                                        <Image
+-                                            src={user.avatarUrl}
+-                                            alt={user.name}
+-                                            width={32}
+-                                            height={32}
+-                                            className="rounded-full"
+-                                        />
+-                                    ) : (
+-                                        <span className="font-bold text-xs">
+-                                            {isAuthenticated && user?.name ? user.name.substring(0, 2).toUpperCase() : 'A'}
+-                                        </span>
+-                                    )}
+-                                </div>
+-                            </button>
+-
+-                            {/* Dropdown Menu */}
+-                            {isMenuOpen && (
+-                                <div className="absolute right-0 mt-2 w-64 bg-deep-anthracite border border-tungsten-grey rounded-md shadow-xl py-1 animate-in fade-in zoom-in-95 duration-200 z-[100]">
+-                                    {isAuthenticated && user ? (
+-                                        <>
+-                                            <div className="px-4 py-2 border-b border-tungsten-grey mb-1">
+-                                                <p className="text-sm font-bold text-white truncate">{user.name}</p>
+-                                                <p className="text-xs text-gray-500 truncate">{user.email}</p>
+-                                            </div>
+-
+-                                            <Link href="/profile" className="flex items-center gap-2 px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-carbon-grey transition-colors">
+-                                                <User className="w-4 h-4" /> Profile
+-                                            </Link>
+-                                            <Link href="/settings" className="flex items-center gap-2 px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-carbon-grey transition-colors">
+-                                                <Settings className="w-4 h-4" /> Settings
+-                                            </Link>
+-                                            <Link href="/history" className="flex items-center gap-2 px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-carbon-grey transition-colors">
+-                                                <History className="w-4 h-4" /> Engineering Log
+-                                            </Link>
+-
+-                                            <div className="h-px bg-tungsten-grey my-1" />
+-
+-                                            <button
+-                                                onClick={authLogout}
+-                                                className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-500 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+-                                            >
+-                                                <LogOut className="w-4 h-4" /> Sign Out
+-                                            </button>
+-                                        </>
+-                                    ) : (
+-                                        <>
+-                                            <div className="px-4 py-3 border-b border-tungsten-grey mb-1 bg-hazard-amber/5">
+-                                                <div className="flex items-center gap-2 mb-1">
+-                                                    <div className="w-2 h-2 rounded-full bg-gray-500"></div>
+-                                                    <p className="text-sm font-bold text-gray-300">Anonymous User</p>
+-                                                </div>
+-                                                <p className="text-[10px] text-gray-500">
+-                                                    Progress is saved locally but may be lost if you clear cache.
+-                                                </p>
+-                                            </div>
+-
+-                                            <div className="px-2 py-1">
+-                                                <div className="flex items-center justify-between px-2 py-2 text-sm text-gray-600 cursor-not-allowed">
+-                                                    <div className="flex items-center gap-2">
+-                                                        <User className="w-4 h-4" /> Profile
+-                                                    </div>
+-                                                    <Lock className="w-3 h-3" />
+-                                                </div>
+-                                                <div className="flex items-center justify-between px-2 py-2 text-sm text-gray-600 cursor-not-allowed">
+-                                                    <div className="flex items-center gap-2">
+-                                                        <Settings className="w-4 h-4" /> Settings
+-                                                    </div>
+-                                                    <Lock className="w-3 h-3" />
+-                                                </div>
+-                                                <div className="flex items-center justify-between px-2 py-2 text-sm text-gray-600 cursor-not-allowed">
+-                                                    <div className="flex items-center gap-2">
+-                                                        <History className="w-4 h-4" /> Engineering Log
+-                                                    </div>
+-                                                    <Lock className="w-3 h-3" />
+-                                                </div>
+-                                            </div>
+-
+-                                            <div className="h-px bg-tungsten-grey my-1" />
+-
+-                                            <div className="p-2">
+-                                                <Link
+-                                                    href="/signin"
+-                                                    className="flex items-center justify-center gap-2 w-full py-2 bg-white text-black text-xs font-bold rounded hover:bg-gray-200 transition-colors"
+-                                                >
+-                                                    Sign In to Unlock
+-                                                </Link>
+-                                            </div>
+-                                        </>
+-                                    )}
+-                                </div>
+-                            )}
+-                        </div>
+-                    </div>
+-                </div>
+-            </div>
+-
+-            {/* Guest Onboarding Banner - Below Navbar */}
+-            {showOnboardingBanner && (
+-                <div className="bg-hazard-amber/10 px-4 py-2 flex items-center justify-center shrink-0 z-10 relative">
+-                    <span className="text-hazard-amber font-mono text-sm font-bold tracking-wide">
+-                        Read Problem ÔåÆ Edit the Code ÔåÆ Test the Fix
+-                    </span>
+-                    <button
+-                        onClick={() => setShowOnboardingBanner(false)}
+-                        className="absolute right-3 text-hazard-amber/60 hover:text-hazard-amber transition-colors p-1"
+-                        aria-label="Dismiss banner"
+-                    >
+-                        <X className="w-4 h-4" />
+-                    </button>
+-                </div>
+-            )}
+-            <div className="flex-1 flex overflow-hidden relative z-10">
+-                <div className="absolute inset-0 pointer-events-none z-0 opacity-10" style={{
+-                    backgroundImage: 'linear-gradient(to right, #27272A 1px, transparent 1px), linear-gradient(to bottom, #27272A 1px, transparent 1px)',
+-                    backgroundSize: '40px 40px'
+-                }}></div>
+-
+-                {isMobile ? (
+-                    <div ref={scrollContainerRef} className="flex-1 overflow-y-auto z-10 scrollbar-thin scrollbar-thumb-tungsten-grey scrollbar-track-transparent">
+-                        {DescriptionPanel}
+-                        <div className="h-[85vh] border-t border-tungsten-grey">
+-                            {RightPane}
+-                        </div>
+-                    </div>
+-                ) : (
+-                    <PanelGroup direction="horizontal" className="flex-1 z-10">
+-                        <Panel defaultSize={35} minSize={20} maxSize={50} className="flex flex-col">
+-                            {DescriptionPanel}
+-                        </Panel>
+-                        <PanelResizeHandle className="w-[2px] bg-tungsten-grey hover:bg-hazard-amber transition-colors" />
+-                        <Panel defaultSize={65}>
+-                            {RightPane}
+-                        </Panel>
+-                    </PanelGroup>
+-                )}
+-            </div>
+-
+-
+-            <ConfirmationModal
+-                isOpen={showRevealConfirm}
+-                onClose={() => setShowRevealConfirm(false)}
+-                onConfirm={confirmReveal}
+-                title="Reveal Solution?"
+-                description="This will mark the challenge as revealed and may affect your score. Are you sure you want to proceed?"
+-                confirmText="Reveal Code"
+-            />
+-            <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} onSuccess={handleAuthSuccess} />
+-            <SuccessModal
+-                isOpen={showSuccessModal}
+-                onClose={() => setShowSuccessModal(false)}
+-                challengeTitle={challenge.title}
+-                challengeId={challenge.id}
+-                executionTime={mergedHistory[0]?.executionTime || 0}
+-                certificateId={unlockedCertId}
+-                trackTitle={unlockedTrackTitle}
+-            />
+-
+-            {isMobile && !hasRevealedSolution && (challenge.solutionCode || challenge.hasSolution) && !isLocked && (
+-                <div className="fixed bottom-0 left-0 right-0 bg-deep-anthracite border-t border-hazard-amber p-4 z-50 flex items-center justify-between animate-in slide-in-from-bottom duration-500">
+-                    <div className="flex items-center gap-3">
+-                        <div className="p-2 bg-hazard-amber/10 rounded-full text-hazard-amber shrink-0">
+-                            <AlertTriangle className="w-5 h-5" />
+-                        </div>
+-                        <div className="text-xs text-gray-300">
+-                            <p className="font-bold text-white mb-0.5">Coding on mobile is hard.</p>
+-                            <p>Tap "Reveal" to see the fix instantly.</p>
+-                        </div>
+-                    </div>
+-                    <button onClick={revealSolutionHandler} className="px-4 py-2 bg-hazard-amber text-black text-xs font-bold rounded shadow-lg hover:bg-hazard-amber/90 transition-colors">
+-                        REVEAL
+-                    </button>
+-                </div>
+-            )}
+-
+-            {isLocked && (
+-                <div className="fixed bottom-0 left-0 right-0 z-[100] bg-deep-anthracite/95 border-t border-hazard-amber backdrop-blur-md p-4 flex items-center justify-center gap-3 animate-in slide-in-from-bottom duration-500 shadow-[0_-5px_20px_rgba(0,0,0,0.5)]">
+-                    <Lock className="w-5 h-5 text-hazard-amber animate-pulse" />
+-                    <span className="text-sm font-bold text-hazard-amber tracking-widest">PREVIEW MODE ÔÇö SOLVE PREVIOUS MISSIONS TO UNLOCK</span>
+-                </div>
+-            )}
+-        </div>
+-    );
+-}
+diff --git a/components/modals/SuccessModal.tsx b/components/modals/SuccessModal.tsx
+index 239ac6b7..4f703856 100644
+--- a/components/modals/SuccessModal.tsx
++++ b/components/modals/SuccessModal.tsx
+@@ -6,9 +6,11 @@ interface SuccessModalProps {
+     isOpen: boolean;
+     onClose: () => void;
+     challengeTitle: string;
+-    trackTitle?: string;
+-    unlockedCertId?: string | null;
+-    unlockedTrackTitle?: string | null;
++    challengeId: string;
++    executionTime: number;
++    certificateId?: string | null;
++    trackTitle?: string | null;
++    nextChallengeId?: string | null;
+ }
+ 
+ export default function SuccessModal({
+diff --git a/hooks/useAllProgress.ts b/hooks/useAllProgress.ts
+deleted file mode 100644
+index c562efa3..00000000
+--- a/hooks/useAllProgress.ts
++++ /dev/null
+@@ -1,47 +0,0 @@
+-'use client';
+-
+-import { useState, useEffect } from 'react';
+-import { useAuth } from '@/utils/auth';
+-import { ChallengeProgress } from '@/types/progress';
+-import { ProgressManager } from '@/lib/progress';
+-
+-/**
+- * Hook for loading all challenge progress
+- * Returns a Map for efficient lookup by challengeId
+- */
+-export function useAllProgress() {
+-    const { user } = useAuth();
+-    const [progressMap, setProgressMap] = useState<Map<string, ChallengeProgress>>(new Map());
+-    const [loading, setLoading] = useState(true);
+-
+-    useEffect(() => {
+-        async function loadAllProgress() {
+-            setLoading(true);
+-
+-            if (user) {
+-                // Authenticated: Load all from Supabase
+-                const map = await ProgressManager.getAllSyncedProgress(user.id);
+-                setProgressMap(map);
+-            } else {
+-                // Anonymous: Load all from localStorage
+-                const allProgress = ProgressManager.getAllLocalProgress();
+-                const map = new Map<string, ChallengeProgress>();
+-
+-                allProgress.forEach(progress => {
+-                    map.set(progress.challengeId, progress);
+-                });
+-
+-                setProgressMap(map);
+-            }
+-
+-            setLoading(false);
+-        }
+-
+-        loadAllProgress();
+-    }, [user]);
+-
+-    return {
+-        progressMap,
+-        loading
+-    };
+-}
+diff --git a/hooks/useAttemptHistory.ts b/hooks/useAttemptHistory.ts
+deleted file mode 100644
+index be8a8cc1..00000000
+--- a/hooks/useAttemptHistory.ts
++++ /dev/null
+@@ -1,23 +0,0 @@
+-// Open-core stub - no persistent attempt history
+-import { useState, useEffect } from 'react';
+-
+-interface Attempt {
+-    id: string;
+-    created_at: string;
+-    status: boolean;
+-    code: string;
+-    execution_time: number;
+-}
+-
+-export function useAttemptHistory(challengeId: string) {
+-    const [attempts, setAttempts] = useState<Attempt[]>([]);
+-    const [loading, setLoading] = useState(false);
+-
+-    // Open-core: No persistent history, only session history
+-    // Session history is managed by useChallengeState
+-    useEffect(() => {
+-        setLoading(false);
+-    }, [challengeId]);
+-
+-    return { attempts, loading, refetch: () => {} };
+-}
+diff --git a/hooks/useChallengeProgress.ts b/hooks/useChallengeProgress.ts
+deleted file mode 100644
+index 2b4f8473..00000000
+--- a/hooks/useChallengeProgress.ts
++++ /dev/null
+@@ -1,110 +0,0 @@
+-'use client';
+-
+-import { useState, useEffect, useCallback } from 'react';
+-import { useAuth } from '@/utils/auth';
+-import { ChallengeProgress } from '@/types/progress';
+-import { ProgressManager } from '@/lib/progress';
+-import toast from 'react-hot-toast';
+-
+-type SyncStatus = 'idle' | 'saving' | 'saved' | 'error' | 'offline';
+-
+-/**
+- * Hook for managing progress of a single challenge
+- * Automatically uses localStorage for anonymous users, Supabase for authenticated users
+- */
+-export function useChallengeProgress(challengeId: string) {
+-    const { user } = useAuth();
+-    const [progress, setProgress] = useState<ChallengeProgress | null>(null);
+-    const [loading, setLoading] = useState(true);
+-    const [isSaving, setIsSaving] = useState(false);
+-    const [syncStatus, setSyncStatus] = useState<SyncStatus>('idle');
+-
+-    // Load progress on mount and when auth state changes
+-    useEffect(() => {
+-        async function loadProgress() {
+-            setLoading(true);
+-
+-            if (user) {
+-                // Authenticated: Load from Supabase
+-                const data = await ProgressManager.getSyncedProgress(user.id, challengeId);
+-                setProgress(data || {
+-                    challengeId,
+-                    status: 'not_started' as const
+-                });
+-            } else {
+-                // Anonymous: Load from localStorage
+-                const data = ProgressManager.getLocalProgress(challengeId);
+-                setProgress(data || {
+-                    challengeId,
+-                    status: 'not_started' as const
+-                });
+-            }
+-
+-            setLoading(false);
+-        }
+-
+-        loadProgress();
+-    }, [user, challengeId]);
+-
+-    /**
+-     * Update progress (saves to appropriate storage)
+-     */
+-    const updateProgress = useCallback(async (updates: Partial<Omit<ChallengeProgress, 'challengeId'>>) => {
+-        const currentProgress = progress || { challengeId, status: 'not_started' as const };
+-        const newProgress: ChallengeProgress = {
+-            challengeId,
+-            status: currentProgress.status,
+-            ...updates
+-        };
+-
+-        setIsSaving(true);
+-        setSyncStatus('saving');
+-
+-        try {
+-            if (user) {
+-                // Check if online
+-                if (!navigator.onLine) {
+-                    setSyncStatus('offline');
+-                    toast.error('You\'re offline. Progress will save when connection is restored.');
+-                    setIsSaving(false);
+-                    return;
+-                }
+-
+-                // Save to Supabase
+-                const success = await ProgressManager.saveSyncedProgress(user.id, newProgress);
+-                if (success) {
+-                    setProgress(newProgress);
+-                    setSyncStatus('saved');
+-
+-                    // Reset to idle after animation
+-                    setTimeout(() => setSyncStatus('idle'), 2000);
+-                } else {
+-                    setSyncStatus('error');
+-                    toast.error('Failed to save progress. Please try again.');
+-                    console.error('Failed to save progress to Supabase');
+-                }
+-            } else {
+-                // Save to localStorage (instant)
+-                ProgressManager.saveLocalProgress(newProgress);
+-                setProgress(newProgress);
+-                setSyncStatus('saved');
+-
+-                setTimeout(() => setSyncStatus('idle'), 1000);
+-            }
+-        } catch (error) {
+-            setSyncStatus('error');
+-            toast.error('Error saving progress');
+-            console.error('Error in updateProgress:', error);
+-        } finally {
+-            setIsSaving(false);
+-        }
+-    }, [user, progress, challengeId]);
+-
+-    return {
+-        progress,
+-        updateProgress,
+-        loading,
+-        isSaving,
+-        syncStatus
+-    };
+-}
+diff --git a/hooks/useChallengeRunner.ts b/hooks/useChallengeRunner.ts
+deleted file mode 100644
+index 612955cd..00000000
+--- a/hooks/useChallengeRunner.ts
++++ /dev/null
+@@ -1,213 +0,0 @@
+-import { useState, useRef, useCallback, useEffect } from 'react';
+-import { toast } from 'react-hot-toast';
+-import { usePostHog } from 'posthog-js/react';
+-import { createClient } from '@/utils/supabase/client';
+-import { logger } from '@/lib/logger';
+-import { Challenge } from '@/types/challenge';
+-
+-// Define types locally if not available globally yet
+-export interface RateLimitState {
+-    remaining: number;
+-    limit: number;
+-    reset: number;
+-}
+-
+-export interface RunnerState {
+-    output: string;
+-    isLoading: boolean;
+-    sandboxID: string | undefined;
+-    status: 'idle' | 'running' | 'success' | 'failure';
+-    rateLimit: RateLimitState;
+-}
+-
+-export function useChallengeRunner(challenge: Challenge, user: any) {
+-    const [output, setOutput] = useState<string>('');
+-    const [isLoading, setIsLoading] = useState<boolean>(false);
+-    const [sandboxID, setSandboxID] = useState<string | undefined>(undefined);
+-    const [status, setStatus] = useState<'idle' | 'running' | 'success' | 'failure' | 'cancelled'>('idle');
+-    const [rateLimit, setRateLimit] = useState<RateLimitState>({ remaining: 5, limit: 5, reset: 0 });
+-
+-    const startTimeRef = useRef<number>(0);
+-    const abortControllerRef = useRef<AbortController | null>(null);
+-    const posthog = usePostHog();
+-
+-    // Fetch rate limit status on mount
+-    useEffect(() => {
+-        const fetchRateLimit = async () => {
+-            try {
+-                const response = await fetch('/api/rate-limit-status');
+-                if (response.ok) {
+-                    const data = await response.json();
+-                    setRateLimit(data);
+-                }
+-            } catch (error) {
+-                logger.error('Failed to fetch rate limit:', error);
+-            }
+-        };
+-        fetchRateLimit();
+-    }, []);
+-
+-    const stripAnsi = (str: string) => str.replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1, 4}(?:;[0-9]{0, 4})*)?[0-9A-ORZcf-nqry=><]/g, '');
+-
+-    const submitSolution = async (code: string, onSuccess?: (executionTime: number) => void, onFailure?: () => void) => {
+-        if (isLoading) return;
+-
+-        // Create new AbortController for this submission
+-        abortControllerRef.current = new AbortController();
+-
+-        setIsLoading(true);
+-        setStatus('running');
+-        setOutput('');
+-        startTimeRef.current = Date.now();
+-
+-        // Generate unique idempotency key to prevent double-submissions
+-        const idempotencyKey = crypto.randomUUID();
+-
+-        try {
+-            const response = await fetch('/api/submit', {
+-                method: 'POST',
+-                headers: { 'Content-Type': 'application/json' },
+-                body: JSON.stringify({
+-                    code,
+-                    challengeId: challenge.id,
+-                    sandboxID,
+-                    idempotencyKey
+-                }),
+-                signal: abortControllerRef.current.signal,
+-            });
+-
+-            // Parse Rate Limit Headers
+-            const limitHeader = response.headers.get('X-RateLimit-Limit');
+-            const remainingHeader = response.headers.get('X-RateLimit-Remaining');
+-            const resetHeader = response.headers.get('X-RateLimit-Reset');
+-
+-            logger.debug('Rate Limit Headers:', { limitHeader, remainingHeader, resetHeader });
+-
+-            const limit = parseInt(limitHeader || '5');
+-            const remaining = parseInt(remainingHeader || '5');
+-            const reset = parseInt(resetHeader || '0');
+-            setRateLimit({ limit, remaining, reset });
+-
+-            if (response.status === 429) {
+-                toast.error('RATE LIMIT EXCEEDED', {
+-                    style: { background: '#EF4444', color: '#fff', fontFamily: 'monospace' },
+-                    iconTheme: { primary: '#fff', secondary: '#EF4444' },
+-                });
+-                setStatus('failure');
+-                setIsLoading(false);
+-                posthog?.capture('code_submitted', { challenge_id: challenge.id, result: 'rate_limited' });
+-                return;
+-            }
+-
+-            // Handle duplicate submission (idempotency check)
+-            if (response.status === 409) {
+-                toast.error('SUBMISSION IN PROGRESS', {
+-                    style: { background: '#F59E0B', color: '#fff', fontFamily: 'monospace' },
+-                    iconTheme: { primary: '#fff', secondary: '#F59E0B' },
+-                });
+-                setStatus('idle');
+-                setIsLoading(false);
+-                return;
+-            }
+-
+-            if (!response.body) throw new Error("No response body");
+-
+-            const reader = response.body.getReader();
+-            const decoder = new TextDecoder();
+-            let buffer = '';
+-
+-            while (true) {
+-                const { done, value } = await reader.read();
+-                if (done) break;
+-
+-                const chunk = decoder.decode(value, { stream: true });
+-                buffer += chunk;
+-
+-                // Update output in real-time
+-                const visibleOutput = buffer.replace(/__JSON_RESULT__:.+$/, '');
+-                setOutput(stripAnsi(visibleOutput));
+-
+-                // Check for result footer
+-                const resultMatch = buffer.match(/__JSON_RESULT__:(.+)$/);
+-                if (resultMatch) {
+-                    const resultJson = resultMatch[1];
+-                    try {
+-                        const result = JSON.parse(resultJson);
+-                        if (result.sandboxID) {
+-                            setSandboxID(result.sandboxID);
+-                        }
+-
+-                        const isSuccess = result.success;
+-                        const executionTime = Date.now() - startTimeRef.current;
+-
+-                        if (isSuccess) {
+-                            setStatus('success');
+-                            toast.success('PATCH SUCCESSFUL', {
+-                                style: { background: '#10B981', color: '#fff', fontFamily: 'monospace' },
+-                                iconTheme: { primary: '#fff', secondary: '#10B981' },
+-                            });
+-
+-                            if (onSuccess) onSuccess(executionTime);
+-
+-                            posthog?.capture('code_submitted', { challenge_id: challenge.id, result: 'success', execution_time: executionTime });
+-                        } else {
+-                            setStatus('failure');
+-                            toast.error('PATCH FAILED', {
+-                                style: { background: '#EF4444', color: '#fff', fontFamily: 'monospace' },
+-                                iconTheme: { primary: '#fff', secondary: '#EF4444' },
+-                            });
+-
+-                            if (onFailure) onFailure();
+-                        }
+-                        posthog?.capture('code_submitted', { challenge_id: challenge.id, result: isSuccess ? 'success' : 'failure', execution_time: executionTime });
+-
+-                        // Remove footer from display
+-                        buffer = buffer.replace(/__JSON_RESULT__:.+$/, '');
+-                    } catch (e) {
+-                        logger.error("Failed to parse result footer", e);
+-                    }
+-                }
+-            }
+-
+-            setOutput(stripAnsi(buffer));
+-        } catch (error) {
+-            // Check if this was a user-initiated cancellation
+-            if (error instanceof Error && error.name === 'AbortError') {
+-                setStatus('cancelled');
+-                setOutput(prev => prev + '\n\nÔÜá´©Å Execution cancelled by user.');
+-                toast('EXECUTION CANCELLED', {
+-                    style: { background: '#F59E0B', color: '#fff', fontFamily: 'monospace' },
+-                    icon: 'ÔÅ╣´©Å',
+-                });
+-                posthog?.capture('code_submitted', { challenge_id: challenge.id, result: 'cancelled' });
+-            } else {
+-                setStatus('failure');
+-                setOutput(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+-                toast.error('EXECUTION ERROR');
+-            }
+-        } finally {
+-            setIsLoading(false);
+-            abortControllerRef.current = null;
+-        }
+-    };
+-
+-    // Cancel a running submission
+-    const cancelSubmission = () => {
+-        if (abortControllerRef.current && isLoading) {
+-            abortControllerRef.current.abort();
+-        }
+-    };
+-
+-    return {
+-        output,
+-        isLoading,
+-        sandboxID,
+-        status,
+-        rateLimit,
+-        submitSolution,
+-        cancelSubmission,
+-        setStatus, // Exporting setStatus if needed for reset
+-        setOutput,
+-        setSandboxID
+-    };
+-}
+diff --git a/hooks/useChallengeState.ts b/hooks/useChallengeState.ts
+deleted file mode 100644
+index c44fa234..00000000
+--- a/hooks/useChallengeState.ts
++++ /dev/null
+@@ -1,175 +0,0 @@
+-import { useState, useRef, useCallback, useEffect } from 'react';
+-import { Monaco } from '@monaco-editor/react';
+-import type * as MonacoEditor from 'monaco-editor';
+-import { toast } from 'react-hot-toast';
+-import { usePostHog } from 'posthog-js/react';
+-import { logger } from '@/lib/logger';
+-import { Challenge } from '@/types/challenge';
+-import { Attempt } from '@/types/attempt';
+-
+-export interface Tab {
+-    id: string;
+-    name: string;
+-    content: string;
+-}
+-
+-export interface LintError {
+-    line: number;
+-    column: number;
+-    endLine?: number;
+-    endColumn?: number;
+-    message: string;
+-    severity: 'error' | 'warning' | 'info';
+-    source: string;
+-}
+-
+-export function useChallengeState(challenge: Challenge) {
+-    // Tab State
+-    const [tabs, setTabs] = useState<Tab[]>([
+-        { id: '1', name: 'solution.py', content: challenge.brokenCode }
+-    ]);
+-    const [activeTabId, setActiveTabId] = useState<string>('1');
+-    const [history, setHistory] = useState<Attempt[]>([]);
+-    const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+-
+-    const [monacoInstance, setMonacoInstance] = useState<Monaco | null>(null);
+-    const [editorInstance, setEditorInstance] = useState<MonacoEditor.editor.IStandaloneCodeEditor | null>(null);
+-
+-    const posthog = usePostHog();
+-    const lintTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+-
+-    const activeTab = tabs.find(t => t.id === activeTabId) || tabs[0];
+-
+-    // Reset code when challenge changes
+-    useEffect(() => {
+-        setTabs([{ id: '1', name: 'solution.py', content: challenge.brokenCode }]);
+-        setActiveTabId('1');
+-        setIsHistoryOpen(false);
+-
+-        // Load history from local storage
+-        const saved = localStorage.getItem(`gradient-run-history-${challenge.id}`);
+-        if (saved) {
+-            try {
+-                setHistory(JSON.parse(saved));
+-            } catch (e) {
+-                logger.error("Failed to parse history", e);
+-            }
+-        } else {
+-            setHistory([]);
+-        }
+-    }, [challenge]);
+-
+-    const updateTabContent = (value: string | undefined) => {
+-        if (!value) return;
+-        setTabs(prev => prev.map(t => t.id === activeTabId ? { ...t, content: value } : t));
+-        debouncedLint(value);
+-    };
+-
+-    const addNewTab = () => {
+-        const newId = Math.random().toString(36).substr(2, 9);
+-        const newTab: Tab = { id: newId, name: 'untitled.py', content: '' };
+-        setTabs([...tabs, newTab]);
+-        setActiveTabId(newId);
+-    };
+-
+-    const closeTab = (e: React.MouseEvent, id: string) => {
+-        e.stopPropagation();
+-        if (tabs.length === 1) return; // Don't close last tab
+-
+-        const newTabs = tabs.filter(t => t.id !== id);
+-        setTabs(newTabs);
+-
+-        if (activeTabId === id) {
+-            setActiveTabId(newTabs[newTabs.length - 1].id);
+-        }
+-    };
+-
+-    const loadAttempt = (attempt: Attempt) => {
+-        if (!attempt.code) {
+-            toast.error("No code saved for this attempt");
+-            return;
+-        }
+-        posthog?.capture('attempt_loaded', { challenge_id: challenge.id });
+-        const newId = Math.random().toString(36).substr(2, 9);
+-        const date = new Date(attempt.timestamp);
+-        const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+-        const name = `attempt_${timeStr}.py`.replace(/:/g, '-');
+-
+-        const newTab: Tab = { id: newId, name, content: attempt.code };
+-        setTabs(prev => [...prev, newTab]);
+-        setActiveTabId(newId);
+-        setIsHistoryOpen(false);
+-    };
+-
+-    const lintCode = useCallback(async (code: string) => {
+-        if (!monacoInstance || !editorInstance) return;
+-
+-        try {
+-            const response = await fetch('/api/lint', {
+-                method: 'POST',
+-                headers: { 'Content-Type': 'application/json' },
+-                body: JSON.stringify({ code })
+-            });
+-
+-            if (!response.ok) {
+-                logger.error('Linting failed');
+-                return;
+-            }
+-
+-            const data = await response.json();
+-
+-            if (data.errors && Array.isArray(data.errors)) {
+-                const markers: MonacoEditor.editor.IMarkerData[] = data.errors.map((error: LintError) => ({
+-                    startLineNumber: error.line,
+-                    startColumn: error.column || 1,
+-                    endLineNumber: error.endLine || error.line,
+-                    endColumn: error.endColumn || 100,
+-                    message: error.message,
+-                    severity: error.severity === 'error'
+-                        ? monacoInstance.MarkerSeverity.Error
+-                        : error.severity === 'warning'
+-                            ? monacoInstance.MarkerSeverity.Warning
+-                            : monacoInstance.MarkerSeverity.Info,
+-                    source: error.source || 'linter'
+-                }));
+-
+-                const model = editorInstance.getModel();
+-                if (model) {
+-                    monacoInstance.editor.setModelMarkers(model, 'python-linter', markers);
+-                }
+-            }
+-        } catch (error) {
+-            logger.error('Linting error:', error);
+-        }
+-    }, [monacoInstance, editorInstance]);
+-
+-    const debouncedLint = useCallback((code: string) => {
+-        if (lintTimeoutRef.current) {
+-            clearTimeout(lintTimeoutRef.current);
+-        }
+-
+-        lintTimeoutRef.current = setTimeout(() => {
+-            lintCode(code);
+-        }, 1000); // Lint after 1 second of no typing
+-    }, [lintCode]);
+-
+-    return {
+-        tabs,
+-        activeTabId,
+-        activeTab,
+-        history,
+-        isHistoryOpen,
+-        monacoInstance,
+-        editorInstance,
+-        setTabs,
+-        setActiveTabId,
+-        setHistory,
+-        setIsHistoryOpen,
+-        setMonacoInstance,
+-        setEditorInstance,
+-        updateTabContent,
+-        addNewTab,
+-        closeTab,
+-        loadAttempt
+-    };
+-}
+diff --git a/lib/challengeStatus.ts b/lib/challengeStatus.ts
+deleted file mode 100644
+index 13a68fde..00000000
+--- a/lib/challengeStatus.ts
++++ /dev/null
+@@ -1,60 +0,0 @@
+-import { ChallengeProgress, ChallengeUIStatus } from '@/types/progress';
+-
+-/**
+- * Determine the UI status of a challenge based on progress and position in track
+- * 
+- * Logic:
+- * - If solved: always show as 'solved'
+- * - If first challenge: always 'current' (unlocked)
+- * - If previous challenge is solved: 'current' (unlocked)
+- * - Otherwise: 'locked'
+- */
+-export function getChallengeStatus(
+-    challengeId: string,
+-    allProgress: Map<string, ChallengeProgress>,
+-    trackChallengeIds: string[]
+-): ChallengeUIStatus {
+-    const index = trackChallengeIds.indexOf(challengeId);
+-    const currentProgress = allProgress.get(challengeId);
+-
+-    // If solved, always show as solved
+-    if (currentProgress?.status === 'solved') {
+-        return 'solved';
+-    }
+-
+-    // First challenge is always unlocked
+-    if (index === 0) {
+-        return 'current';
+-    }
+-
+-    // Check if previous challenge is solved
+-    const previousId = trackChallengeIds[index - 1];
+-    const previousProgress = allProgress.get(previousId);
+-
+-    if (previousProgress?.status === 'solved') {
+-        return 'current';
+-    }
+-
+-    // Otherwise locked
+-    return 'locked';
+-}
+-
+-/**
+- * Get all unlocked challenge IDs in a track
+- */
+-export function getUnlockedChallenges(
+-    allProgress: Map<string, ChallengeProgress>,
+-    trackChallengeIds: string[]
+-): string[] {
+-    const unlocked: string[] = [];
+-
+-    for (const challengeId of trackChallengeIds) {
+-        const status = getChallengeStatus(challengeId, allProgress, trackChallengeIds);
+-
+-        if (status === 'current' || status === 'solved') {
+-            unlocked.push(challengeId);
+-        }
+-    }
+-
+-    return unlocked;
+-}
+diff --git a/lib/challenges.ts b/lib/challenges.ts
+deleted file mode 100644
+index 36419573..00000000
+--- a/lib/challenges.ts
++++ /dev/null
+@@ -1,17 +0,0 @@
+-// Open-core stub - local data only, no Supabase
+-import { Challenge } from '@/types/challenge';
+-import { challenges as localChallenges } from '@/data/challenges';
+-
+-/**
+- * Get all challenges from local data
+- */
+-export async function getChallenges(): Promise<Challenge[]> {
+-    return localChallenges;
+-}
+-
+-/**
+- * Get a single challenge by ID from local data
+- */
+-export async function getChallengeById(id: string): Promise<Challenge | null> {
+-    return localChallenges.find(c => c.id === id) || null;
+-}
+diff --git a/lib/constants.ts b/lib/constants.ts
+index 12b4823b..d8b0bf0d 100644
+--- a/lib/constants.ts
++++ b/lib/constants.ts
+@@ -1,4 +1,8 @@
+ 
+ // Guest Onboarding Constants
+ export const ONBOARDING_COMPLETE_KEY = 'tentropy_onboarding_complete';
+-export const INTRO_CHALLENGE_ID = 'ai-cost-cache-002';
+\ No newline at end of file
++export const INTRO_CHALLENGE_ID = 'ai-cost-cache-002';
++
++// Progress Constants
++export const STORAGE_PREFIX = 'challenge_progress_';
++export const ALL_PROGRESS_KEY = 'all_challenge_progress';
+\ No newline at end of file
+diff --git a/lib/progress.ts b/lib/progress.ts
+deleted file mode 100644
+index 93d32cdd..00000000
+--- a/lib/progress.ts
++++ /dev/null
+@@ -1,66 +0,0 @@
+-
+-import { ChallengeProgress } from '@/types/progress';
+-
+-const PROGRESS_KEY = 'tentropy_progress';
+-
+-function getStoredProgress(): ChallengeProgress[] {
+-    if (typeof window === 'undefined') return [];
+-    try {
+-        const stored = localStorage.getItem(PROGRESS_KEY);
+-        return stored ? JSON.parse(stored) : [];
+-    } catch {
+-        return [];
+-    }
+-}
+-
+-function saveProgress(progress: ChallengeProgress[]) {
+-    if (typeof window === 'undefined') return;
+-    localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress));
+-}
+-
+-export const ProgressManager = {
+-    async getProgress(challengeId: string): Promise<ChallengeProgress | null> {
+-        const all = getStoredProgress();
+-        return all.find(p => p.challengeId === challengeId) || null;
+-    },
+-
+-    async getAllProgress(): Promise<ChallengeProgress[]> {
+-        return getStoredProgress();
+-    },
+-
+-    getAllLocalProgress(): ChallengeProgress[] {
+-        return getStoredProgress();
+-    },
+-
+-    async getAllSyncedProgress(userId: string): Promise<Map<string, ChallengeProgress>> {
+-        // In open-core/stub mode, we return local progress even for "synced" requests
+-        // or we could return an empty map if we strictly want no-sync behavior.
+-        // Returning local progress allows the app to function if auth is bypassed or mocked.
+-        const all = getStoredProgress();
+-        const map = new Map<string, ChallengeProgress>();
+-        all.forEach(p => map.set(p.challengeId, p));
+-        return map;
+-    },
+-
+-    async updateProgress(challengeId: string, updates: Partial<ChallengeProgress>): Promise<void> {
+-        const all = getStoredProgress();
+-        const existing = all.findIndex(p => p.challengeId === challengeId);
+-
+-        if (existing >= 0) {
+-            all[existing] = { ...all[existing], ...updates };
+-        } else {
+-            const newProgress: ChallengeProgress = {
+-                challengeId,
+-                status: (updates.status as any) || 'not_started',
+-                ...updates
+-            };
+-            all.push(newProgress);
+-        }
+-
+-        saveProgress(all);
+-    },
+-
+-    async migrateAnonymousProgress(): Promise<void> {
+-        // No-op in open-core
+-    }
+-};
+diff --git a/package.json b/package.json
+index 6f5e3d59..f904b7e8 100644
+--- a/package.json
++++ b/package.json
+@@ -3,7 +3,7 @@
+     "node": ">=20.9.0",
+     "npm": ">=10.0.0"
+   },
+-  "name": "tentropy-core",
++  "name": "mvp",
+   "version": "0.1.0",
+   "private": true,
+   "scripts": {
+@@ -25,7 +25,7 @@
+     "canvas-confetti": "^1.9.3",
+     "clsx": "^2.1.1",
+     "lucide-react": "^0.446.0",
+-    "next": "15.1.0",
++    "next": "15.1.11",
+     "posthog-js": "^1.161.0",
+     "react": "^19.2.1",
+     "react-dom": "^19.2.1",
+@@ -42,7 +42,7 @@
+     "@types/react-dom": "^19",
+     "autoprefixer": "^10.4.20",
+     "eslint": "^9.39.2",
+-    "eslint-config-next": "15.1.0",
++    "eslint-config-next": "15.1.11",
+     "monaco-editor": "^0.55.1",
+     "postcss": "^8",
+     "tailwindcss": "^3.4.1",
+diff --git a/tailwind.config.ts b/tailwind.config.ts
+index 81de0ae3..8d070a77 100644
+--- a/tailwind.config.ts
++++ b/tailwind.config.ts
+@@ -29,18 +29,9 @@ const config: Config = {
+                         transform: 'translate(-50%, -40%) scale(1)',
+                     },
+                 },
+-                'pulse-slow': {
+-                    '0%, 100%': {
+-                        opacity: '1',
+-                    },
+-                    '50%': {
+-                        opacity: '.5',
+-                    },
+-                },
+             },
+             animation: {
+                 spotlight: 'spotlight 2s ease .75s 1 forwards',
+-                'pulse-slow': 'pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+             },
+         },
+     },

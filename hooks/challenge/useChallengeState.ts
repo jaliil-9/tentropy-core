@@ -59,6 +59,13 @@ export function useChallengeState(challenge: Challenge) {
         }
     }, [challenge]);
 
+    // Save history to local storage whenever it changes
+    useEffect(() => {
+        if (history.length > 0) {
+            localStorage.setItem(`gradient-run-history-${challenge.id}`, JSON.stringify(history));
+        }
+    }, [history, challenge.id]);
+
     const updateTabContent = (value: string | undefined) => {
         if (!value) return;
         setTabs(prev => prev.map(t => t.id === activeTabId ? { ...t, content: value } : t));
@@ -66,7 +73,7 @@ export function useChallengeState(challenge: Challenge) {
     };
 
     const addNewTab = () => {
-        const newId = Math.random().toString(36).substr(2, 9);
+        const newId = Math.random().toString(36).slice(2, 11);
         const newTab: Tab = { id: newId, name: 'untitled.py', content: '' };
         setTabs([...tabs, newTab]);
         setActiveTabId(newId);
@@ -90,7 +97,7 @@ export function useChallengeState(challenge: Challenge) {
             return;
         }
         posthog?.capture('attempt_loaded', { challenge_id: challenge.id });
-        const newId = Math.random().toString(36).substr(2, 9);
+        const newId = Math.random().toString(36).slice(2, 11);
         const date = new Date(attempt.timestamp);
         const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
         const name = `attempt_${timeStr}.py`.replace(/:/g, '-');

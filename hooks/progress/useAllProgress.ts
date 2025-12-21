@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useAuth } from '@/utils/auth';
+import { useAuth } from '@/context/AuthContext';
 import { ChallengeProgress } from '@/types/progress';
-import { ProgressManager } from '@/lib/progress';
+import { ProgressManager } from '@/services/progress';
 
 /**
  * Hook for loading all challenge progress

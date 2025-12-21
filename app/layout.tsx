@@ -4,6 +4,7 @@ import "./globals.css";
 import PageLoadingBar from "@/components/layout/PageLoadingBar";
 import { AuthProvider } from "@/context/AuthContext";
 import CookieConsent from "@/components/shared/CookieConsent";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 const jetbrainsMono = JetBrains_Mono({
     variable: "--font-mono",
@@ -37,7 +38,9 @@ export default function RootLayout({
                 <AuthProvider>
                     <PageLoadingBar />
                     <div className="min-h-screen">
-                        {children}
+                        <ErrorBoundary>
+                            {children}
+                        </ErrorBoundary>
                     </div>
                     <CookieConsent />
                 </AuthProvider>

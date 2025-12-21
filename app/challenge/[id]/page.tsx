@@ -1,8 +1,8 @@
-import ChallengeInterface from '@/components/modals/ChallengeInterface';
+import ChallengeWorkspace from '@/components/challenge/ChallengeWorkspace';
 import LoadingChallenge from '@/components/challenge/LoadingChallenge';
 import DatabaseErrorFallback from '@/components/DatabaseErrorFallback';
 import { tracks } from '@/data/challenges';
-import { getChallengeById } from '@/lib/challenges';
+import { getChallengeById } from '@/services/challenges';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
@@ -92,7 +92,7 @@ export default async function ChallengePage({ params }: PageProps) {
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
             />
             <Suspense fallback={<LoadingChallenge />}>
-                <ChallengeInterface challenge={sanitizedChallenge} />
+                <ChallengeWorkspace challenge={sanitizedChallenge} />
             </Suspense>
         </main>
     );
