@@ -104,79 +104,25 @@ export default function Home() {
         <div id="tracks" className="w-full max-w-6xl mx-auto px-4 py-20">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-black text-white mb-4 font-mono">
-              {"<"} SYSTEM TRACKS {"/>"}
+              {"<"} LEARNING TRACK {"/>"}
             </h2>
             <p className="text-gray-400 font-mono text-sm md:text-base">
-                            // Choose your path. Master the chaos.
+                            // Master AI infrastructure patterns.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* System Resilience Track */}
-            <div className="bg-carbon-grey/30 border border-tungsten-grey rounded-lg p-6 hover:border-hazard-amber transition-all duration-300 group flex flex-col">
+          <div className="flex justify-center">
+            {/* AI Architect Track */}
+            <div className="bg-carbon-grey/30 border border-tungsten-grey rounded-lg p-6 hover:border-hazard-amber transition-all duration-300 group flex flex-col max-w-xl w-full">
               <div className="flex justify-between items-start mb-6">
                 <div className="flex items-center gap-4">
                   <span className="font-mono text-2xl text-gray-500 font-bold opacity-50">01</span>
                   <div>
                     <h3 className="text-2xl font-black text-white mb-1 font-mono group-hover:text-hazard-amber transition-colors">
-                      SYSTEM RESILIENCE
-                    </h3>
-                    <p className="text-sm text-gray-400 font-mono">
-                                            // 5 missions | EASY → MEDIUM
-                    </p>
-                  </div>
-                </div>
-                <Activity className="w-8 h-8 text-hazard-amber opacity-50 group-hover:opacity-100 transition-opacity" />
-              </div>
-
-              <div className="space-y-3 mb-8 flex-1">
-                <div className="flex items-center gap-3 text-sm">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  <span className="text-gray-300 font-mono">The Regex Assassin</span>
-                  <span className="ml-auto text-[10px] font-bold px-2 py-1 rounded border text-hazard-amber border-hazard-amber/30 bg-hazard-amber/10 font-mono">MEDIUM</span>
-                </div>
-                <div className="flex items-center gap-3 text-sm">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  <span className="text-gray-300 font-mono">The Burst Handler</span>
-                  <span className="ml-auto text-[10px] font-bold px-2 py-1 rounded border text-hazard-amber border-hazard-amber/30 bg-hazard-amber/10 font-mono">MEDIUM</span>
-                </div>
-                <div className="flex items-center gap-3 text-sm">
-                  <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
-                  <span className="text-gray-400 font-mono">The Retry Storm</span>
-                  <span className="ml-auto text-[10px] font-bold px-2 py-1 rounded border text-terminal-green border-terminal-green/30 bg-terminal-green/10 font-mono">EASY</span>
-                </div>
-                <div className="flex items-center gap-3 text-sm">
-                  <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
-                  <span className="text-gray-400 font-mono">The Connection Drain</span>
-                  <span className="ml-auto text-[10px] font-bold px-2 py-1 rounded border text-hazard-amber border-hazard-amber/30 bg-hazard-amber/10 font-mono">MEDIUM</span>
-                </div>
-                <div className="flex items-center gap-3 text-sm">
-                  <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
-                  <span className="text-gray-400 font-mono">The Data Flood</span>
-                  <span className="ml-auto text-[10px] font-bold px-2 py-1 rounded border text-hazard-amber border-hazard-amber/30 bg-hazard-amber/10 font-mono">MEDIUM</span>
-                </div>
-              </div>
-
-              <Link
-                href="/challenges?track=systems-resilience"
-                className="flex items-center justify-center gap-2 w-full py-3 border-2 border-hazard-amber text-hazard-amber hover:bg-hazard-amber/10 transition-colors font-mono font-bold text-sm group"
-              >
-                VIEW TRACK
-                <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </div>
-
-            {/* AI Architect Track */}
-            <div className="bg-carbon-grey/30 border border-tungsten-grey rounded-lg p-6 hover:border-hazard-amber transition-all duration-300 group flex flex-col">
-              <div className="flex justify-between items-start mb-6">
-                <div className="flex items-center gap-4">
-                  <span className="font-mono text-2xl text-gray-500 font-bold opacity-50">02</span>
-                  <div>
-                    <h3 className="text-2xl font-black text-white mb-1 font-mono group-hover:text-hazard-amber transition-colors">
                       AI ARCHITECT
                     </h3>
                     <p className="text-sm text-gray-400 font-mono">
-                                            // 10 missions | MEDIUM → HARD
+                                            // 3 sample challenges
                     </p>
                   </div>
                 </div>
@@ -185,29 +131,19 @@ export default function Home() {
 
               <div className="space-y-3 mb-8 flex-1">
                 <div className="flex items-center gap-3 text-sm">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  <span className="text-gray-300 font-mono">The Wallet Burner</span>
+                  <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
+                  <span className="text-gray-300 font-mono">The Token Economist</span>
+                  <span className="ml-auto text-[10px] font-bold px-2 py-1 rounded border text-terminal-green border-terminal-green/30 bg-terminal-green/10 font-mono">EASY</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm">
+                  <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
+                  <span className="text-gray-300 font-mono">The Lost Chunk</span>
+                  <span className="ml-auto text-[10px] font-bold px-2 py-1 rounded border text-terminal-green border-terminal-green/30 bg-terminal-green/10 font-mono">EASY</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm">
+                  <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
+                  <span className="text-gray-300 font-mono">The Hybrid Oracle</span>
                   <span className="ml-auto text-[10px] font-bold px-2 py-1 rounded border text-hazard-amber border-hazard-amber/30 bg-hazard-amber/10 font-mono">MEDIUM</span>
-                </div>
-                <div className="flex items-center gap-3 text-sm">
-                  <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
-                  <span className="text-gray-400 font-mono">The Context Squeeze</span>
-                  <span className="ml-auto text-[10px] font-bold px-2 py-1 rounded border text-hazard-amber border-hazard-amber/30 bg-hazard-amber/10 font-mono">MEDIUM</span>
-                </div>
-                <div className="flex items-center gap-3 text-sm">
-                  <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
-                  <span className="text-gray-400 font-mono">The Context Guillotine</span>
-                  <span className="ml-auto text-[10px] font-bold px-2 py-1 rounded border text-red-500 border-red-500/30 bg-red-500/10 font-mono">HARD</span>
-                </div>
-                <div className="flex items-center gap-3 text-sm">
-                  <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
-                  <span className="text-gray-400 font-mono">The Hallucination Trap</span>
-                  <span className="ml-auto text-[10px] font-bold px-2 py-1 rounded border text-red-500 border-red-500/30 bg-red-500/10 font-mono">HARD</span>
-                </div>
-                <div className="flex items-center gap-3 text-sm">
-                  <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
-                  <span className="text-gray-400 font-mono">The Hanging Stream</span>
-                  <span className="ml-auto text-[10px] font-bold px-2 py-1 rounded border text-red-500 border-red-500/30 bg-red-500/10 font-mono">HARD</span>
                 </div>
               </div>
 
@@ -215,11 +151,15 @@ export default function Home() {
                 href="/challenges?track=ai-architect"
                 className="flex items-center justify-center gap-2 w-full py-3 border-2 border-hazard-amber text-hazard-amber hover:bg-hazard-amber/10 transition-colors font-mono font-bold text-sm group"
               >
-                VIEW TRACK
+                VIEW CHALLENGES
                 <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
           </div>
+
+          <p className="text-center text-gray-500 text-sm mt-8 font-mono">
+            // Want more challenges? Visit <a href="https://tentropy.co" target="_blank" rel="noopener noreferrer" className="text-hazard-amber hover:underline">tentropy.co</a> for the full experience.
+          </p>
         </div>
 
         {/* About Section */}

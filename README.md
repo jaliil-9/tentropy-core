@@ -15,7 +15,7 @@
 
 TENTROPY is a **CTF learning platform** for AI/ML engineers who want to master the **infrastructure and reliability patterns** that make LLM applications production-ready.
 
-Most AI education focuses on model training. TENTROPY focuses on what happens after the engineering that determines whether your AI system survives contact with real users.
+Most AI education focuses on model training. TENTROPY focuses on what happens after — the engineering that determines whether your AI system survives contact with real users.
 
 ### The Problem We Solve
 
@@ -26,7 +26,6 @@ Most AI education focuses on model training. TENTROPY focuses on what happens af
 | Dataset curation | Hallucination guardrails |
 | Evaluation metrics | Streaming & timeout handling |
 
-
 **TENTROPY bridges this gap** through hands-on challenges inspired by real production incidents.
 
 ---
@@ -35,7 +34,7 @@ Most AI education focuses on model training. TENTROPY focuses on what happens af
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
-│  BRIEFING: "Your chatbot is crashing with context_length_exceeded"   │
+│  BRIEFING: "Your LLM wrapper is losing context mid-conversation"   │
 ├──────────────────────────────────────────────────────────────────────┤
 │                                                                      │
 │  ┌─────────────────────────┐    ┌─────────────────────────────────┐  │
@@ -56,27 +55,21 @@ Most AI education focuses on model training. TENTROPY focuses on what happens af
 
 ---
 
-## Learning Tracks
+## Learning Track
 
-### Systems Resilience
-- ReDoS attacks and catastrophic backtracking
-- Rate limiting with Token Bucket algorithms
-- Retry storms and exponential backoff with jitter
-- Connection pooling and resource management
-- N+1 query detection and batch optimization
+### The AI Architect
 
-### The AI Architect  
+Master the infrastructure that makes AI systems reliable:
+
+- **Token Budget Management** — Control costs with smart token allocation
+- **RAG Chunking** — Split documents for optimal retrieval
+- **Hybrid Search** — Combine semantic and keyword search for better results
 - Semantic caching to cut API costs by 90%
 - Context window management (sliding window, summarization)
 - Structured output validation and guardrails
-- Streaming responses to prevent gateway timeouts
-- RAG pipeline optimization with re-ranking
 
-### Observability & Debugging
-- Distributed tracing to find the root cause of a failure in a microservice chain.
-- Sliding window error rate calculation to trigger alerts.
-- Structured JSON logging to make debugging queryable.
-  
+*More tracks coming soon...*
+
 ---
 
 ## Open Source Core
@@ -88,9 +81,17 @@ This repository contains the **open-source core** of TENTROPY.
 - Complete platform architecture (Next.js 15 + App Router)
 - Challenge execution engine (E2B sandboxed environments)
 - Monaco editor integration with syntax highlighting
-- **2 sample challenges per track** to understand the format
+- Local progress tracking via localStorage
+- **3 sample challenges** from the AI Architect track
 
-> **Want the full experience?** Visit [tentropy.co](https://tentropy.co) for all challenges.
+### What's NOT Included
+
+- Full challenge library (17+ challenges on full platform)
+- User authentication & cloud sync
+- Certificates & badges
+- Leaderboards
+
+> **Want the full experience?** Visit [tentropy.co](https://tentropy.co) for all challenges, progress tracking, and certificates.
 
 ---
 
@@ -100,11 +101,10 @@ This repository contains the **open-source core** of TENTROPY.
 |-------|------------|
 | **Framework** | [Next.js 15](https://nextjs.org/) (App Router) |
 | **Language** | TypeScript 5 |
-| **Database** | [Supabase](https://supabase.com/) (PostgreSQL + Auth) |
-| **KV Store** | [Upstash Redis](https://upstash.com/) (Rate limiting) |
 | **Sandbox** | [E2B](https://e2b.dev/) (Isolated code execution) |
 | **Editor** | Monaco Editor (VS Code engine) |
 | **Styling** | Tailwind CSS + Lucide Icons |
+| **Rate Limiting** | [Upstash Redis](https://upstash.com/) (Optional) |
 
 ---
 
@@ -112,10 +112,8 @@ This repository contains the **open-source core** of TENTROPY.
 
 ### Prerequisites
 
-- Node.js 18+
-- Bun
+- Node.js 18+ or Bun
 - E2B API key ([get one free](https://e2b.dev/))
-- Upstash Redis (optional, for rate limiting)
 
 ### Installation
 
@@ -126,6 +124,7 @@ cd tentropy-core
 
 # Install dependencies
 bun install
+# or: npm install
 
 # Set up environment variables
 cp .env.example .env.local
@@ -134,23 +133,19 @@ cp .env.example .env.local
 ### Environment Variables
 
 ```env
-# Optional
-E2B_API_KEY=your_e2b_api_key (Recommended but optional to see the UI)
-NEXT_PUBLIC_SUPABASE_URL= (Optional, stubbed in core)
-NEXT_PUBLIC_SUPABASE_ANON_KEY= (Optional, stubbed in core)
+# Required for code execution
+E2B_API_KEY=your_e2b_api_key
 
 # Optional (for rate limiting)
 UPSTASH_REDIS_REST_URL=your_redis_url
 UPSTASH_REDIS_REST_TOKEN=your_redis_token
-
-# Optional (for analytics)
-NEXT_PUBLIC_POSTHOG_KEY=your_posthog_key
 ```
 
 ### Run Development Server
 
 ```bash
 bun run dev
+# or: npm run dev
 ```
 
 Visit [http://localhost:3000](http://localhost:3000) to start solving challenges.
@@ -165,17 +160,16 @@ tentropy-core/
 │   ├── api/               # API routes (submit, rate-limit)
 │   ├── challenge/         # Challenge workspace interface
 │   ├── challenges/        # Challenge catalog/roadmap
-│   ├── providers/         # Global context providers
-│   └── (public)/          # Public landing, docs, and legal pages
+│   └── (public)/          # Landing, docs pages
 ├── components/            # Reusable UI & domain components
-│   ├── challenge/         # Workspace specialized panels
+│   ├── challenge/         # Workspace panels (Editor, Console, Briefing)
 │   ├── layout/            # Navigation, Footer, Loading bars
 │   └── shared/            # Common UI elements
 ├── context/               # React Context for global state
 ├── data/                  # Static challenge definitions
-├── hooks/                 # Custom React hooks (domain-grouped)
+├── hooks/                 # Custom React hooks
 ├── services/              # Business logic & data orchestration
-├── utils/                 # Pure utility & helper functions
+├── utils/                 # Pure utility functions
 └── types/                 # TypeScript interface definitions
 ```
 
@@ -211,7 +205,7 @@ Challenges follow a consistent structure:
 }
 ```
 
-See `data/challenges/systems.ts` for full examples.
+See `data/challenges.ts` for examples.
 
 ---
 
@@ -233,8 +227,6 @@ We welcome contributions! Whether it's:
 5. Commit: `git commit -m 'Add amazing feature'`
 6. Push: `git push origin feature/amazing-feature`
 7. Open a Pull Request
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
 ---
 

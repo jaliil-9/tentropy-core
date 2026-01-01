@@ -63,7 +63,7 @@ export default function NavBar() {
                         About
                     </a>
                     <Link href="/docs" className="text-gray-400 hover:text-white transition-colors duration-200 text-sm font-mono">
-                        Docs
+                        Documentation
                     </Link>
                 </div>
 

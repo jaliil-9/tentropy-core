@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import React from 'react';
-import { BookOpen, Cpu, Layers, HelpCircle, Code, Shield, Zap, Clock, Eye, Wrench } from 'lucide-react';
+import { BookOpen, Cpu, Layers, HelpCircle, Code, Shield, Zap, Clock, Wrench } from 'lucide-react';
 
 export const metadata: Metadata = {
     title: 'Documentation | TENTROPY',
@@ -155,66 +155,39 @@ export default function DocsPage() {
                 </div>
 
                 <div className="grid gap-6">
-                    {/* Track 1 */}
-                    <div className="bg-carbon-grey border border-tungsten-grey rounded-lg p-6">
-                        <div className="flex items-center gap-3 mb-3">
-                            <Shield className="w-5 h-5 text-terminal-green" />
-                            <h3 className="text-xl font-bold text-white">Systems Resilience</h3>
-                            <span className="ml-auto text-xs font-mono text-gray-500">5 challenges</span>
-                        </div>
-                        <p className="text-gray-400 mb-4">
-                            Master the failure modes of high-throughput distributed systems. Debug the logic that crashes production.
-                        </p>
-                        <div className="flex flex-wrap gap-2">
-                            <span className="px-2 py-1 bg-tungsten-grey/50 text-gray-300 text-xs font-mono rounded">ReDoS Prevention</span>
-                            <span className="px-2 py-1 bg-tungsten-grey/50 text-gray-300 text-xs font-mono rounded">Token Bucket</span>
-                            <span className="px-2 py-1 bg-tungsten-grey/50 text-gray-300 text-xs font-mono rounded">Retry Jitter</span>
-                            <span className="px-2 py-1 bg-tungsten-grey/50 text-gray-300 text-xs font-mono rounded">Connection Pooling</span>
-                            <span className="px-2 py-1 bg-tungsten-grey/50 text-gray-300 text-xs font-mono rounded">N+1 Queries</span>
-                        </div>
-                    </div>
-
-                    {/* Track 2 */}
+                    {/* AI Architect Track */}
                     <div className="bg-carbon-grey border border-tungsten-grey rounded-lg p-6">
                         <div className="flex items-center gap-3 mb-3">
                             <Zap className="w-5 h-5 text-hazard-amber" />
                             <h3 className="text-xl font-bold text-white">The AI Architect</h3>
-                            <span className="ml-auto text-xs font-mono text-gray-500">10 challenges</span>
+                            <span className="ml-auto text-xs font-mono text-gray-500">3 sample challenges</span>
                         </div>
                         <p className="text-gray-400 mb-4">
-                            Build the robust infrastructure that wraps LLMs. Master Semantic Caching, Context Windows, and Streaming stability.
+                            Build the robust infrastructure that wraps LLMs. Master token budgets, RAG pipelines, and hybrid search.
                         </p>
                         <div className="flex flex-wrap gap-2">
-                            <span className="px-2 py-1 bg-tungsten-grey/50 text-gray-300 text-xs font-mono rounded">Semantic Caching</span>
-                            <span className="px-2 py-1 bg-tungsten-grey/50 text-gray-300 text-xs font-mono rounded">Context Windows</span>
-                            <span className="px-2 py-1 bg-tungsten-grey/50 text-gray-300 text-xs font-mono rounded">JSON Guardrails</span>
-                            <span className="px-2 py-1 bg-tungsten-grey/50 text-gray-300 text-xs font-mono rounded">Stream Timeouts</span>
-                            <span className="px-2 py-1 bg-tungsten-grey/50 text-gray-300 text-xs font-mono rounded">RAG Reranking</span>
-                            <span className="px-2 py-1 bg-tungsten-grey/50 text-gray-300 text-xs font-mono rounded">Agent Loops</span>
+                            <span className="px-2 py-1 bg-tungsten-grey/50 text-gray-300 text-xs font-mono rounded">Token Budget</span>
+                            <span className="px-2 py-1 bg-tungsten-grey/50 text-gray-300 text-xs font-mono rounded">RAG Chunking</span>
+                            <span className="px-2 py-1 bg-tungsten-grey/50 text-gray-300 text-xs font-mono rounded">Hybrid Search</span>
                         </div>
                     </div>
 
-                    {/* Track 3 - Observability */}
-                    <div className="bg-carbon-grey border border-tungsten-grey rounded-lg p-6">
-                        <div className="flex items-center gap-3 mb-3">
-                            <Eye className="w-5 h-5 text-blue-400" />
-                            <h3 className="text-xl font-bold text-white">Observability & Debugging</h3>
-                            <span className="ml-auto text-xs font-mono text-gray-500">3 challenges</span>
-                        </div>
-                        <p className="text-gray-400 mb-4">
-                            Learn the essential tools to debug distributed AI systems. Practice Tracing, Metrics, and Structured Logging.
+                    {/* Full Platform CTA */}
+                    <div className="bg-hazard-amber/5 border border-hazard-amber/20 rounded-lg p-4 text-center">
+                        <p className="text-gray-400 text-sm">
+                            This open-core version includes 3 sample challenges.{' '}
+                            <a
+                                href="https://tentropy.co"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-hazard-amber hover:underline font-bold"
+                            >
+                                Visit tentropy.co
+                            </a>{' '}
+                            for the full experience with 17+ challenges, progress tracking, and certificates.
                         </p>
-                        <div className="flex flex-wrap gap-2">
-                            <span className="px-2 py-1 bg-tungsten-grey/50 text-gray-300 text-xs font-mono rounded">Distributed Tracing</span>
-                            <span className="px-2 py-1 bg-tungsten-grey/50 text-gray-300 text-xs font-mono rounded">Metric Alerting</span>
-                            <span className="px-2 py-1 bg-tungsten-grey/50 text-gray-300 text-xs font-mono rounded">Structured Logging</span>
-                        </div>
                     </div>
                 </div>
-
-                <p className="text-gray-500 text-sm mt-4">
-                    Complete all challenges in a track to earn a <strong className="text-hazard-amber">digital certificate</strong> with a unique verification ID.
-                </p>
             </section>
 
             {/* Tech Stack */}

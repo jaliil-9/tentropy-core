@@ -28,7 +28,7 @@ export default function Footer() {
                                     fill
                                     sizes="24px"
                                     unoptimized
-                                    className="object-contain"
+                                    className="object-cover"
                                 />
                             </div>
                             <span className="text-xl font-black tracking-tight text-white font-mono">TENTROPY</span>
